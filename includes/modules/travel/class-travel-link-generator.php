@@ -81,6 +81,11 @@ class Travel_Link_Generator {
                 continue;
             }
             
+            // 無効化されたサービスをスキップ
+            if (isset($template['disabled']) && $template['disabled']) {
+                continue;
+            }
+            
             // A8プログラムIDがある場合は適用
             if (isset($template['program_id'])) {
                 $url = str_replace('{PROGRAM_ID}', $template['program_id'], $template['url']);
