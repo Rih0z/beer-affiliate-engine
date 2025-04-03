@@ -1,0 +1,7 @@
+"JTB": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/city/{CITY}/?utm_source=affiliate&utm_medium=blog&utm_campaign=beer",
+    "label": "JTBで{CITY}の旅行プランを見る",
+    "image": "jtb.png",
+    "affiliate_id": "a17092772583",
+    "program_id": "ここにA8プログラムIDを入力",
+    "priority": 8,
