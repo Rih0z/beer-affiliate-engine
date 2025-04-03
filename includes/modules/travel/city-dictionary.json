@@ -1,0 +1,79 @@
+[
+  {
+    "name": "シアトル",
+    "country": "アメリカ",
+    "region": "海外",
+    "aliases": ["Seattle", "シアトル市"],
+    "keywords": ["クラフトビール", "マイクロブルワリー", "スターバックス", "アメリカ"],
+    "coordinates": {
+      "lat": 47.6062,
+      "lng": -122.3321
+    },
+    "image_url": "seattle.jpg",
+    "description": "アメリカ北西部のクラフトビール先進地。多数のマイクロブルワリーと独自のホップ文化が特徴"
+  },
+  {
+    "name": "ロサンゼルス",
+    "country": "アメリカ",
+    "region": "海外",
+    "aliases": ["Los Angeles", "LA", "ロスアンゼルス", "ロス"],
+    "keywords": ["クラフトビール", "カリフォルニア", "アメリカ"],
+    "coordinates": {
+      "lat": 34.0522,
+      "lng": -118.2437
+    },
+    "image_url": "los_angeles.jpg",
+    "description": "西海岸スタイルのIPAや実験的なサワービールなど、革新的なクラフトビールシーンが発展中"
+  },
+  {
+    "name": "サンディエゴ",
+    "country": "アメリカ",
+    "region": "海外",
+    "aliases": ["San Diego", "サンディエゴ市"],
+    "keywords": ["クラフトビール", "カリフォルニア", "IPA", "アメリカ"],
+    "coordinates": {
+      "lat": 32.7157,
+      "lng": -117.1611
+    },
+    "image_url": "san_diego.jpg",
+    "description": "カリフォルニアIPAの聖地として知られ、150以上の醸造所がある米国最高峰のビール都市のひとつ"
+  },
+  {
+    "name": "ニューヨーク",
+    "country": "アメリカ",
+    "region": "海外",
+    "aliases": ["New York", "NYC", "ニューヨーク市"],
+    "keywords": ["クラフトビール", "ブルックリン", "アメリカ"],
+    "coordinates": {
+      "lat": 40.7128,
+      "lng": -74.0060
+    },
+    "image_url": "new_york.jpg",
+    "description": "ブルックリンを中心に発展した洗練されたクラフトビールシーン。革新的な醸造所が集結"
+  },
+  {
+    "name": "バンクーバー",
+    "country": "カナダ",
+    "region": "海外",
+    "aliases": ["Vancouver", "バンクーバー市"],
+    "keywords": ["クラフトビール", "カナダ", "ブリティッシュコロンビア"],
+    "coordinates": {
+      "lat": 49.2827,
+      "lng": -123.1207
+    },
+    "image_url": "vancouver.jpg",
+    "description": "カナダ西海岸の美しい自然に囲まれた都市。ブリティッシュコロンビア州のクラフトビール文化の中心地"
+  },
+  {
+    "name": "東京",
+    "prefecture": "東京都",
+    "region": "関東",
+    "aliases": ["とうきょう", "Tokyo"],
+    "keywords": ["観光", "ホテル", "旅行"],
+    "coordinates": {
+      "lat": 35.6762,
+      "lng": 139.6503
+    },
+    "image_url": "tokyo.jpg",
+    "description": "数多くの最先端クラフトビールバーやブルワリーがある日本の首都"
+  },
