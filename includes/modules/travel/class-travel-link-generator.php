@@ -61,18 +61,61 @@ class Travel_Link_Generator {
         $city_name = isset($city['name']) ? $city['name'] : '';
         $region = isset($city['region']) ? $city['region'] : '';
         $prefecture = isset($city['prefecture']) ? $city['prefecture'] : '';
+        $country = isset($city['country']) ? $city['country'] : '日本';
         
         if (empty($city_name)) {
             return $links;
         }
         
+        // 国内/海外でフィルタリング
+        $is_international = ($region === '海外' || !empty($country) && $country !== '日本');
+        
         // 各サービスのリンクを生成
         foreach ($this->link_templates as $service => $template) {
-            // URLテンプレートに地域名を適用
-            $url = str_replace('{CITY}', urlencode($city_name), $template['url']);
+            // 国内/海外のフィルタリング
+            if ($is_international && !isset($template['international_support'])) {
+                // 海外対応していないサービスはスキップ
+                continue;
+            } else if (!$is_international && isset($template['international_only']) && $template['international_only']) {
+                // 国内専用サービスはスキップ
+                continue;
+            }
             
-            // 都道府県パラメータがある場合は適用
-            if (!empty($prefecture) && isset($template['prefecture_params'])) {
+            // A8プログラムIDがある場合は適用
+            if (isset($template['program_id'])) {
+                $url = str_replace('{PROGRAM_ID}', $template['program_id'], $template['url']);
+            } else {
+                $url = $template['url'];
+            }
+            
+            // URLテンプレートに地域名を適用
+            $url = str_replace('{CITY}', urlencode($city_name), $url);
+            
+            // 都市コードがある場合は適用
+            if (isset($template['city_codes']) && isset($template['city_codes'][$city_name])) {
+                $city_code = $template['city_codes'][$city_name];
+                $url = str_replace('{CITY_CODE}', $city_code, $url);
+            }
+            
+            // 国コードがある場合は適用（海外用）
+            if ($is_international && !empty($country) && isset($template['country_codes']) && isset($template['country_codes'][$country])) {
+                $country_code = $template['country_codes'][$country];
+                $url = str_replace('{COUNTRY_CODE}', $country_code, $url);
+            }
+            
+            // 国名パラメータが必要な場合は適用（海外用）
+            if ($is_international && !empty($country) && isset($template['country_params'])) {
+                $country_param = isset($template['country_params'][$country]) 
+                    ? $template['country_params'][$country] 
+                    : '';
+                
+                if (!empty($country_param)) {
+                    $url = str_replace('{COUNTRY}', $country_param, $url);
+                }
+            }
+            
+            // 都道府県パラメータがある場合は適用（国内用）
+            if (!$is_international && !empty($prefecture) && isset($template['prefecture_params'])) {
                 $prefecture_param = isset($template['prefecture_params'][$prefecture]) 
                     ? $template['prefecture_params'][$prefecture] 
                     : '';
@@ -105,12 +148,16 @@ class Travel_Link_Generator {
             // トラッキングパラメータを追加
             $url = $this->add_tracking_params($url, $city);
             
+            // サービスのカテゴリーを設定（デフォルトは'travel'）
+            $category = isset($template['category']) ? $template['category'] : 'travel';
+            
             $links[$service] = array(
                 'url' => $url,
                 'label' => $label,
                 'service' => $service,
                 'image' => isset($template['image']) ? $template['image'] : '',
-                'priority' => isset($template['priority']) ? intval($template['priority']) : 10
+                'priority' => isset($template['priority']) ? intval($template['priority']) : 10,
+                'category' => $category
             );
         }
         
@@ -118,6 +165,14 @@ class Travel_Link_Generator {
         uasort($links, function($a, $b) {
             return $b['priority'] - $a['priority'];
         });
+        
+        // カテゴリーでフィルタリング（現在はtravel固定）
+        $category_filter = apply_filters('beer_affiliate_category_filter', 'travel');
+        if ($category_filter !== 'all') {
+            $links = array_filter($links, function($link) use ($category_filter) {
+                return $link['category'] === $category_filter;
+            });
+        }
         
         return $links;
     }
@@ -146,7 +201,7 @@ class Travel_Link_Generator {
         }
         
         // 季節パラメータがある場合は適用
-        if (!empty($season) && isset($template['seasonal_params'][$season])) {
+        if (!empty($season) && isset($template['seasonal_params']) && isset($template['seasonal_params'][$season])) {
             $url .= $template['seasonal_params'][$season];
         }
         
@@ -191,6 +246,11 @@ class Travel_Link_Generator {
             'utm_campaign' => 'travel',
             'utm_content' => sanitize_title($city['name'])
         );
+        
+        // すでにUTMパラメータが含まれている場合はスキップ
+        if (strpos($url, 'utm_source=') !== false) {
+            return $url;
+        }
         
         // URLにパラメータを追加
         $url_parts = parse_url($url);
