@@ -3,7 +3,7 @@
     "url": "https://travel.rakuten.co.jp/hotel/search/?f_area={CITY}&f_teikei=premium&f_sort=review_high&f_disp=normal&f_points_min=4&f_limit=20&f_static=1&f_rm_equip=2&f_keyword={CITY}&f_affiliate_id={AFFILIATE_ID}",
     "label": "{CITY}のホテルを楽天トラベルで探す",
     "image": "rakuten.png",
-    "affiliate_id": "your-rakuten-affiliate-id",
+    "affiliate_id": "20a2fc9d.5c6c02f2.20a2fc9e.541a36d0",
     "priority": 10,
     "prefecture_params": {
       "北海道": "&area_code=hokkaido",
@@ -169,25 +169,27 @@
     }
   },
   "エクスペディア": {
-    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.expedia.co.jp/Hotel-Search?destination={CITY}&utm_source=affiliate&utm_medium=blog&utm_campaign=beerblog",
+    "url": "https://www.expedia.co.jp/Hotel-Search?destination={CITY}&utm_source=affiliate&utm_medium=blog&utm_campaign=beerblog",
     "label": "エクスペディアで{CITY}のホテルを探す",
     "image": "expedia.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "ここにA8プログラムIDを入力",
-    "priority": 9,
+    "affiliate_id": "",
+    "program_id": "",
+    "priority": 1,
     "international_support": true,
     "country_params": {
       "アメリカ": "&regionId=6340629",
       "カナダ": "&regionId=3000671"
-    }
+    },
+    "disabled": true
   },
   "HotelsCombined": {
-    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.hotelscombined.jp/Hotels/{CITY}?utm_source=affiliate&utm_medium=blog&utm_campaign=beerblog",
+    "url": "https://www.hotelscombined.jp/Hotels/{CITY}?utm_source=affiliate&utm_medium=blog&utm_campaign=beerblog",
     "label": "{CITY}の格安ホテルを比較",
     "image": "hotelscombined.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "ここにA8プログラムIDを入力",
-    "priority": 8,
-    "international_support": true
+    "affiliate_id": "",
+    "program_id": "",
+    "priority": 1,
+    "international_support": true,
+    "disabled": true
   }
 }
