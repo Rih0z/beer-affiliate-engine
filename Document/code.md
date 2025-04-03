@@ -166,12 +166,16 @@ WordPress コンテンツフィルター → Beer_Affiliate_Core → Affiliate_M
 4. **リンク生成**:
    - 抽出されたキーワードに基づきアフィリエイトリンクを生成
    - 国内/海外判別に基づいてサービスをフィルタリング
+   - 無効化されたサービスをスキップ
 
-5. **表示処理**:
+5. **カテゴリーフィルタリング**:
+   - 設定されたカテゴリー（travel, shopping, all）に基づいてリンクをフィルタリング
+
+6. **表示処理**:
    - 指定テンプレートで出力を生成
    - CSSとJavaScriptによる装飾と動的機能
 
-6. **最終出力**:
+7. **最終出力**:
    - 生成されたHTML出力を返却
 
 ## 5. コーディング規約
@@ -325,6 +329,9 @@ $links = apply_filters('beer_affiliate_links', $links, $keywords, $module_name);
 
 // 表示前フィルター
 $output = apply_filters('beer_affiliate_before_display', $output, $links, $template);
+
+// カテゴリーフィルターフック
+$category_filter = apply_filters('beer_affiliate_category_filter', 'travel');
 ```
 
 ### 6.3 表示テンプレートの追加方法
@@ -347,6 +354,21 @@ $wp_customize->add_control('beer_affiliate_template', [
         'new_template' => __('新テンプレート', 'beer-affiliate-engine') // 追加
     ]
 ]);
+```
+
+### 6.4 新しいアフィリエイトサービスの追加
+
+`link-templates.json` に新しいサービスを追加：
+
+```json
+"新サービス名": {
+  "url": "https://example.com/search?q={CITY}&affiliate_id={AFFILIATE_ID}",
+  "label": "{CITY}の新サービス",
+  "image": "new-service.png",
+  "affiliate_id": "your-affiliate-id",
+  "priority": 5,
+  "category": "travel"
+}
 ```
 
 ## 7. エラー処理
@@ -393,7 +415,7 @@ private function validate_city($city) {
         return false;
     }
     
-    $required_keys = ['name', 'prefecture', 'region'];
+    $required_keys = ['name'];
     foreach ($required_keys as $key) {
         if (!isset($city[$key]) || empty($city[$key])) {
             return false;
@@ -507,7 +529,7 @@ $formatted = sprintf(__('%sのホテルを探す', 'beer-affiliate-engine'), $ci
 
 ## 付録: モジュール間のデータ構造
 
-### 1. 都市データ構造
+### 1. 国内都市データ構造
 
 ```json
 {
@@ -543,7 +565,7 @@ $formatted = sprintf(__('%sのホテルを探す', 'beer-affiliate-engine'), $ci
 }
 ```
 
-### 3. リンクテンプレート構造
+### 3. 国内旅行サービスのリンクテンプレート構造
 
 ```json
 {
@@ -551,8 +573,9 @@ $formatted = sprintf(__('%sのホテルを探す', 'beer-affiliate-engine'), $ci
     "url": "https://travel.rakuten.co.jp/hotel/search/?f_area={CITY}&f_affiliate_id={AFFILIATE_ID}",
     "label": "{CITY}のホテルを楽天トラベルで探す",
     "image": "rakuten.png",
-    "affiliate_id": "your-rakuten-affiliate-id",
-    "priority": 10
+    "affiliate_id": "20a2fc9d.5c6c02f2.20a2fc9e.541a36d0",
+    "priority": 10,
+    "category": "travel"
   }
 }
 ```
@@ -561,14 +584,74 @@ $formatted = sprintf(__('%sのホテルを探す', 'beer-affiliate-engine'), $ci
 
 ```json
 {
-  "JTB": {
-    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/city/{CITY}/",
+  "JTB国内旅行": {
+    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+61B8KY+15A4+64Z8Z&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/city/{CITY}/",
     "label": "JTBで{CITY}の旅行プランを見る",
     "image": "jtb.png",
     "affiliate_id": "a17092772583",
-    "program_id": "your-program-id",
-    "priority": 8,
-    "international_support": true
+    "program_id": "4530O4+61B8KY+15A4+64Z8Z",
+    "priority": 9,
+    "category": "travel"
+  }
+}
+```
+
+### 5. 海外専用サービスのリンクテンプレート構造
+
+```json
+{
+  "カタール航空": {
+    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+64AELU+5NMU+5YJRM&a8ejpredirect=https://www.qatarairways.com/ja-jp/destinations/{CITY_CODE}.html",
+    "label": "カタール航空で{CITY}へ",
+    "image": "qatar.png",
+    "affiliate_id": "a17092772583",
+    "program_id": "4530O4+64AELU+5NMU+5YJRM",
+    "priority": 6,
+    "international_support": true,
+    "international_only": true,
+    "city_codes": {
+      "シアトル": "sea",
+      "ロサンゼルス": "lax",
+      "サンディエゴ": "san",
+      "ニューヨーク": "nyc",
+      "バンクーバー": "yvr",
+      "ポートランド": "pdx"
+    },
+    "category": "travel"
+  }
+}
+```
+
+### 6. 無効化されたサービスのリンクテンプレート構造
+
+```json
+{
+  "エクスペディア": {
+    "url": "https://www.expedia.co.jp/Hotel-Search?destination={CITY}",
+    "label": "エクスペディアで{CITY}のホテルを探す",
+    "image": "expedia.png",
+    "affiliate_id": "",
+    "program_id": "",
+    "priority": 1,
+    "international_support": true,
+    "disabled": true,
+    "category": "travel"
+  }
+}
+```
+
+### 7. 買い物カテゴリーのリンクテンプレート構造
+
+```json
+{
+  "JTBショッピング": {
+    "url": "https://px.a8.net/svt/ejp?a8mat=s00000018449001012000&a8ejpredirect=https://shopping.jtb.co.jp/search/?q={CITY}",
+    "label": "{CITY}の名産品をお取り寄せ",
+    "image": "jtb-shopping.png",
+    "affiliate_id": "a17092772583",
+    "program_id": "s00000018449001012000",
+    "priority": 5,
+    "category": "shopping"
   }
 }
 ```
