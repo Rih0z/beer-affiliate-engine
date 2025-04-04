@@ -72,6 +72,11 @@ class Beer_Affiliate_Content_Analyzer {
      * @return array 抽出されたキーワード
      */
     public function analyze($content) {
+        // 空のコンテンツの場合は空配列を返す
+        if (empty($content)) {
+            return array();
+        }
+        
         // キャッシュキーを生成
         $cache_key = $this->cache_prefix . md5($content);
         
@@ -86,7 +91,9 @@ class Beer_Affiliate_Content_Analyzer {
         $results = $this->extract_keywords($content);
         
         // 結果をキャッシュ（1時間）
-        $this->data_store->set_cache($cache_key, $results, HOUR_IN_SECONDS);
+        if (!empty($results)) {
+            $this->data_store->set_cache($cache_key, $results, HOUR_IN_SECONDS);
+        }
         
         return $results;
     }
