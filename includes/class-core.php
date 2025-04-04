@@ -11,6 +11,13 @@ class Beer_Affiliate_Core {
     private $module_manager;
     
     /**
+     * コンストラクタ
+     */
+    public function __construct() {
+        // 必要な初期化をここに追加
+    }
+    
+    /**
      * プラグインを初期化
      */
     public function init() {
@@ -35,6 +42,11 @@ class Beer_Affiliate_Core {
      * @return string HTML出力
      */
     public function process_content($content, $args = array()) {
+        // モジュールマネージャーが初期化されていることを確認
+        if (null === $this->module_manager) {
+            $this->init();
+        }
+        
         // 処理前にコンテンツをフィルタリング
         $content = apply_filters('beer_affiliate_before_analysis', $content, get_the_ID());
         
