@@ -82,6 +82,7 @@ function beer_affiliate_shortcode($atts) {
     
     // コアを初期化
     $core = new Beer_Affiliate_Core();
+    $core->init(); // 初期化メソッドを呼び出し
     
     // コンテンツを処理して出力を返す
     global $post;
@@ -93,7 +94,14 @@ add_shortcode('beer_affiliate', 'beer_affiliate_shortcode');
 function beer_affiliate_auto_insert($content) {
     // 投稿ページのみに適用
     if (is_singular('post') && get_option('beer_affiliate_auto_insert', true)) {
-        $content .= do_shortcode('[beer_affiliate]');
+        // グローバル変数で無限ループを防止
+        global $beer_affiliate_processing;
+        if (!$beer_affiliate_processing) {
+            $beer_affiliate_processing = true;
+            $affiliate_content = do_shortcode('[beer_affiliate]');
+            $beer_affiliate_processing = false;
+            $content .= $affiliate_content;
+        }
     }
     return $content;
 }
