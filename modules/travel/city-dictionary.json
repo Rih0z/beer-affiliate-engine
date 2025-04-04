@@ -77,3 +77,69 @@
     "image_url": "tokyo.jpg",
     "description": "数多くの最先端クラフトビールバーやブルワリーがある日本の首都"
   },
+  {
+    "name": "大阪",
+    "prefecture": "大阪府",
+    "region": "関西",
+    "aliases": ["おおさか", "Osaka"],
+    "keywords": ["観光", "グルメ", "旅行"],
+    "coordinates": {
+      "lat": 34.6937,
+      "lng": 135.5023
+    },
+    "image_url": "osaka.jpg",
+    "description": "関西のクラフトビールシーンをリードする食い倒れの街。個性的な醸造所が点在"
+  },
+  {
+    "name": "京都",
+    "prefecture": "京都府",
+    "region": "関西",
+    "aliases": ["きょうと", "Kyoto"],
+    "keywords": ["観光", "寺院", "旅行"],
+    "coordinates": {
+      "lat": 35.0116,
+      "lng": 135.7681
+    },
+    "image_url": "kyoto.jpg",
+    "description": "伝統と革新が共存する古都。京都ならではの和素材を使ったクラフトビールも"
+  },
+  {
+    "name": "福岡",
+    "prefecture": "福岡県",
+    "region": "九州",
+    "aliases": ["ふくおか", "Fukuoka"],
+    "keywords": ["観光", "グルメ", "旅行"],
+    "coordinates": {
+      "lat": 33.5902,
+      "lng": 130.4017
+    },
+    "image_url": "fukuoka.jpg",
+    "description": "九州のクラフトビールシーンをリードする都市。地元食材との相性抜群のビールが楽しめる"
+  },
+  {
+    "name": "札幌",
+    "prefecture": "北海道",
+    "region": "北海道",
+    "aliases": ["さっぽろ", "Sapporo"],
+    "keywords": ["観光", "ビール", "旅行"],
+    "coordinates": {
+      "lat": 43.0618,
+      "lng": 141.3545
+    },
+    "image_url": "sapporo.jpg",
+    "description": "日本のビール発祥の地として知られる北海道の中心都市。歴史あるビール文化とクラフトビールが共存"
+  },
+  {
+    "name": "ポートランド",
+    "country": "アメリカ",
+    "region": "海外",
+    "aliases": ["Portland", "ポートランド市"],
+    "keywords": ["クラフトビール", "オレゴン", "アメリカ"],
+    "coordinates": {
+      "lat": 45.5202,
+      "lng": -122.6742
+    },
+    "image_url": "portland.jpg",
+    "description": "アメリカのクラフトビール革命の震源地とも言われる都市。数百もの醸造所が集まるビール天国"
+  }
+]
