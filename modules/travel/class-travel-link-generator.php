@@ -112,7 +112,9 @@ class Travel_Link_Generator {
      * @return array 宿泊施設情報
      */
     public function get_hotels($city_name, $options = array()) {
-        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+        if (!class_exists('Travel_API_Client')) {
+            require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+        }
         $api_client = new Travel_API_Client();
         return $api_client->search_hotels($city_name, $options);
     }

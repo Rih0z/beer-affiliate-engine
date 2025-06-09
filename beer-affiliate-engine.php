@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.4.0');
+define('BEER_AFFILIATE_VERSION', '1.4.1');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -121,7 +121,9 @@ function beer_affiliate_hotels_shortcode($atts) {
         // 記事から都市名を自動検出
         global $post;
         if ($post && $post->post_content) {
-            require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
+            if (!class_exists('Travel_Content_Analyzer')) {
+                require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
+            }
             $analyzer = new Travel_Content_Analyzer();
             $cities = $analyzer->analyze($post->post_content);
             if (!empty($cities)) {
@@ -135,8 +137,12 @@ function beer_affiliate_hotels_shortcode($atts) {
     }
     
     // 宿泊施設情報を取得
-    require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-link-generator.php';
-    require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+    if (!class_exists('Travel_Link_Generator')) {
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-link-generator.php';
+    }
+    if (!class_exists('Travel_API_Client')) {
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+    }
     
     $link_generator = new Travel_Link_Generator();
     $api_client = new Travel_API_Client();
