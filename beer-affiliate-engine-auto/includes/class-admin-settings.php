@@ -144,12 +144,25 @@ class Beer_Affiliate_Admin_Settings {
                                 <td><input type="text" id="application_id" name="application_id" class="regular-text"></td>
                             </tr>
                             <tr class="a8-fields" style="display:none;">
-                                <th><label for="program_id">プログラムID</label></th>
+                                <th><label for="a8mat_code">A8.net a8matコード</label></th>
+                                <td>
+                                    <input type="text" id="a8mat_code" name="a8mat_code" class="regular-text">
+                                    <p class="description">
+                                        A8.netの管理画面から取得したa8matコード<br>
+                                        例: 4530O4+61B8KY+15A4+63WO2
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="a8-fields" style="display:none;">
+                                <th><label for="program_id">プログラムID（オプション）</label></th>
                                 <td><input type="text" id="program_id" name="program_id" class="regular-text"></td>
                             </tr>
                             <tr class="a8-fields" style="display:none;">
-                                <th><label for="media_id">メディアID</label></th>
-                                <td><input type="text" id="media_id" name="media_id" class="regular-text"></td>
+                                <th><label for="media_id">メディアID（オプション）</label></th>
+                                <td>
+                                    <input type="text" id="media_id" name="media_id" class="regular-text">
+                                    <p class="description">例: a17092772583</p>
+                                </td>
                             </tr>
                             <tr>
                                 <th><label for="enabled">有効化</label></th>

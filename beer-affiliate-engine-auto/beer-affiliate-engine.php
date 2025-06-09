@@ -229,18 +229,16 @@ class Beer_Affiliate_Engine {
             'jtb' => array(
                 'name' => 'JTB国内旅行',
                 'type' => 'a8',
-                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.jtb.co.jp%2Fkokunai-hotel%2F',
-                'program_id' => '5350',
-                'media_id' => 'a17092772583',
+                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+                'a8mat_code' => '4530O4+61B8KY+15A4+63WO2',
                 'label' => 'JTBで{CITY}のホテルを探す',
                 'enabled' => true
             ),
             'ikyu_restaurant' => array(
                 'name' => '一休.comレストラン',
                 'type' => 'a8',
-                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Frestaurant.ikyu.com%2F',
-                'program_id' => '23449',
-                'media_id' => 'a17092772583',
+                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+                'a8mat_code' => '3NJ1WF+CEJ4HE+1OK+NX736',
                 'label' => '一休で{CITY}のレストランを探す',
                 'enabled' => true
             ),
@@ -283,19 +281,17 @@ class Beer_Affiliate_Engine {
             'yomiuri_travel' => array(
                 'name' => '読売旅行',
                 'type' => 'a8',
-                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.yomiuri-ryokou.co.jp%2F',
-                'program_id' => '22834',
-                'media_id' => 'a17092772583',
+                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+                'a8mat_code' => '4530O4+5VYC4Y+5KLE+5YRHE',
                 'label' => '読売旅行でツアーを探す',
                 'enabled' => true
             ),
             'otomoni' => array(
                 'name' => 'Otomoni',
                 'type' => 'a8',
-                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fotomoni.net%2F',
-                'program_id' => '22658',
-                'media_id' => 'a17092772583',
-                'label' => 'Otomoniでビールツアーを探す',
+                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+                'a8mat_code' => '3NJ1WF+D1R12Q+4XM6+5YJRM',
+                'label' => 'Otomoniでクラフトビール定期便',
                 'enabled' => true
             ),
             'fast_fi' => array(
@@ -337,9 +333,8 @@ class Beer_Affiliate_Engine {
             'travel_standard' => array(
                 'name' => 'TRAVEL STANDARD JAPAN',
                 'type' => 'a8',
-                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.t-standard.com%2F',
-                'program_id' => '22763',
-                'media_id' => 'a17092772583',
+                'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+                'a8mat_code' => '4530O4+61WO6Q+5LKE+5YJRM',
                 'label' => 'TRAVEL STANDARDで海外旅行を探す',
                 'enabled' => true
             )
@@ -430,19 +425,27 @@ class Beer_Affiliate_Engine {
                 break;
                 
             case 'a8':
-                // A8の場合、メディアIDを処理（'a'プレフィックスを削除）
-                $media_id = isset($program['media_id']) ? $program['media_id'] : 'a17092772583';
-                $media_id_clean = ltrim($media_id, 'a');
-                
-                // A8のa8matパラメータフォーマット
-                $site_id = $this->get_a8_site_id($program['program_id']);
-                $a8mat = $media_id_clean . '+s00000' . $site_id;
-                $url = str_replace('{A8MAT}', $a8mat, $url);
+                // A8の場合、a8mat_codeが設定されていればそれを使用
+                if (!empty($program['a8mat_code'])) {
+                    $url = str_replace('{A8MAT}', $program['a8mat_code'], $url);
+                } else {
+                    // 従来の方式（後方互換性のため）
+                    $media_id = isset($program['media_id']) ? $program['media_id'] : 'a17092772583';
+                    $media_id_clean = ltrim($media_id, 'a');
+                    
+                    // A8のa8matパラメータフォーマット
+                    $site_id = $this->get_a8_site_id($program['program_id']);
+                    $a8mat = $media_id_clean . '+s00000' . $site_id;
+                    $url = str_replace('{A8MAT}', $a8mat, $url);
+                }
                 
                 // その他の置換
                 $encoded_city = rawurlencode($city);
                 $url = str_replace('{CITY}', $encoded_city, $url);
-                $url = str_replace('{MEDIA_ID}', $media_id_clean, $url);
+                if (isset($program['media_id'])) {
+                    $media_id_clean = ltrim($program['media_id'], 'a');
+                    $url = str_replace('{MEDIA_ID}', $media_id_clean, $url);
+                }
                 if (isset($program['program_id'])) {
                     $url = str_replace('{PROGRAM_ID}', $program['program_id'], $url);
                 }
@@ -600,18 +603,16 @@ register_activation_hook(__FILE__, function() {
         'jtb' => array(
             'name' => 'JTB国内旅行',
             'type' => 'a8',
-            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.jtb.co.jp%2Fkokunai-hotel%2F',
-            'program_id' => '5350',
-            'media_id' => 'a17092772583',
+            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+            'a8mat_code' => '4530O4+61B8KY+15A4+63WO2',
             'label' => 'JTBで{CITY}のホテルを探す',
             'enabled' => true
         ),
         'ikyu_restaurant' => array(
             'name' => '一休.comレストラン',
             'type' => 'a8',
-            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Frestaurant.ikyu.com%2F',
-            'program_id' => '23449',
-            'media_id' => 'a17092772583',
+            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+            'a8mat_code' => '3NJ1WF+CEJ4HE+1OK+NX736',
             'label' => '一休で{CITY}のレストランを探す',
             'enabled' => true
         ),
@@ -645,19 +646,17 @@ register_activation_hook(__FILE__, function() {
         'yomiuri_travel' => array(
             'name' => '読売旅行',
             'type' => 'a8',
-            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.yomiuri-ryokou.co.jp%2F',
-            'program_id' => '22834',
-            'media_id' => 'a17092772583',
+            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+            'a8mat_code' => '4530O4+5VYC4Y+5KLE+5YRHE',
             'label' => '読売旅行でツアーを探す',
             'enabled' => true
         ),
         'otomoni' => array(
             'name' => 'Otomoni',
             'type' => 'a8',
-            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fotomoni.net%2F',
-            'program_id' => '22658',
-            'media_id' => 'a17092772583',
-            'label' => 'Otomoniでビールツアーを探す',
+            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+            'a8mat_code' => '3NJ1WF+D1R12Q+4XM6+5YJRM',
+            'label' => 'Otomoniでクラフトビール定期便',
             'enabled' => true
         ),
         'fast_fi' => array(
@@ -699,9 +698,8 @@ register_activation_hook(__FILE__, function() {
         'travel_standard' => array(
             'name' => 'TRAVEL STANDARD JAPAN',
             'type' => 'a8',
-            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}&a8ejpredirect=https%3A%2F%2Fwww.t-standard.com%2F',
-            'program_id' => '22763',
-            'media_id' => 'a17092772583',
+            'url_template' => 'https://px.a8.net/svt/ejp?a8mat={A8MAT}',
+            'a8mat_code' => '4530O4+61WO6Q+5LKE+5YJRM',
             'label' => 'TRAVEL STANDARDで海外旅行を探す',
             'enabled' => true
         )
