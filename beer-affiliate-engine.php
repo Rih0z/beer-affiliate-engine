@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.3.1');
+define('BEER_AFFILIATE_VERSION', '1.3.2');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -68,6 +68,7 @@ function beer_affiliate_activate() {
     }
     
     // クリック追跡用のテーブルを作成
+    // Analyticsクラスはstatic methodなので、クラスファイルの読み込みのみで十分
     Beer_Affiliate_Analytics::create_tables();
     
     // 書き換えルールをフラッシュ
