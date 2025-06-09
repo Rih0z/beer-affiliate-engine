@@ -86,8 +86,8 @@ class Beer_Affiliate_Settings_Importer {
       "affiliate_id": "20a2fc9d.5c6c02f2.20a2fc9e.541a36d0"
     },
     "JTB国内旅行": {
-      "affiliate_id": "a17092772583",
-      "program_id": "4530O4+61B8KY+15A4+64Z8Z"
+      "affiliate_id": "3UJGPC",
+      "program_id": "5350"
     }
   }
 }

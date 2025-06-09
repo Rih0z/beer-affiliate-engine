@@ -1,6 +1,6 @@
 {
   "楽天トラベル": {
-    "url": "https://travel.rakuten.co.jp/hotel/search/?f_area={CITY}&f_teikei=premium&f_sort=review_high&f_disp=normal&f_points_min=4&f_limit=20&f_static=1&f_rm_equip=2&f_keyword={CITY}&f_affiliate_id={AFFILIATE_ID}",
+    "url": "https://hb.afl.rakuten.co.jp/hgc/{AFFILIATE_ID}/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2Fkeyword%2Fsearch%2F%3Ff_keyword%3D{CITY}%26f_chu%3D0%26f_screen%3Dhotel%26f_teikei%3D%26f_tel%3D%26f_static%3D1&m=https%3A%2F%2Ftravel.rakuten.co.jp%2Fkeyword%2Fsearch%2F%3Ff_keyword%3D{CITY}%26f_chu%3D0%26f_screen%3Dhotel%26f_teikei%3D%26f_tel%3D%26f_static%3D1",
     "label": "{CITY}のホテルを楽天トラベルで探す",
     "image": "rakuten.png",
     "affiliate_id": "",
@@ -32,11 +32,11 @@
     }
   },
   "JTB国内旅行": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+61B8KY+15A4+64Z8Z&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/city/{CITY}/?utm_source=affiliate&utm_medium=blog&utm_campaign=beer",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/search/?keyword={CITY}",
     "label": "JTBで{CITY}の旅行プランを見る",
     "image": "jtb.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "5350",
     "priority": 9,
     "prefecture_params": {
       "北海道": "&pref=hokkaido",
@@ -62,7 +62,7 @@
     }
   },
   "HIS": {
-    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.his-j.com/search/detail.html?key={CITY}&emk=beer_aff",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.his-j.com/search/detail.html?key={CITY}&emk=beer_aff",
     "label": "HISで{CITY}ツアーを探す",
     "image": "his.png",
     "affiliate_id": "",
@@ -89,11 +89,11 @@
     "disable_reason": "プログラムに参加していない"
   },
   "トラベル・スタンダード・ジャパン": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=s00000026123001005000&a8ejpredirect=https://www.travel-standard.com/search/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.travel-standard.com/search/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}へのオーダーメイド旅行プラン",
     "image": "travel-standard.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "26123",
     "priority": 8,
     "international_support": true,
     "country_params": {
@@ -102,20 +102,20 @@
     }
   },
   "JTBショッピング": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=s00000018449001012000&a8ejpredirect=https://shopping.jtb.co.jp/search/?q={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://shopping.jtb.co.jp/search/?q={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}の名産品をお取り寄せ",
     "image": "jtb-shopping.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "18449",
     "priority": 5,
     "category": "shopping"
   },
   "カタール航空": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+64AELU+5NMU+5YJRM&a8ejpredirect=https://www.qatarairways.com/ja-jp/destinations/{CITY_CODE}.html?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.qatarairways.com/ja-jp/destinations/{CITY_CODE}.html?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "カタール航空で{CITY}へ",
     "image": "qatar.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "5NMU",
     "priority": 6,
     "international_support": true,
     "international_only": true,
@@ -132,21 +132,21 @@
     }
   },
   "Travelist": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+63OZ02+4XZI+HVFKY&a8ejpredirect=https://www.travelist.co.jp/search/flight/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.travelist.co.jp/search/flight/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}行き格安航空券を探す",
     "image": "travelist.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "4XZI",
     "priority": 7,
     "international_support": true,
     "international_only": true
   },
   "Oooh(ウー)": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+7VZSC2+5OEM+5YRHE&a8ejpredirect=https://oooh.io/destinations/{CITY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://oooh.io/destinations/{CITY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}の現地オプショナルツアー",
     "image": "oooh.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "5OEM",
     "priority": 7,
     "international_support": true,
     "international_only": true,
@@ -163,11 +163,11 @@
     }
   },
   "Saily": {
-    "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+5WJRQQ+5L2C+5YRHE&a8ejpredirect=https://saily.app/destinations/{COUNTRY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://saily.app/destinations/{COUNTRY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}旅行用のeSIMを購入",
     "image": "saily.png",
     "affiliate_id": "",
-    "program_id": "",
+    "program_id": "5L2C",
     "priority": 4,
     "international_support": true,
     "international_only": true,
@@ -204,12 +204,93 @@
     "disabled": true
   },
   "読売旅行": {
-    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.yomiuri-ryokou.co.jp/search/?keyword={CITY}",
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.yomiuri-ryokou.co.jp/search/?keyword={CITY}",
     "label": "読売旅行で{CITY}のツアーを探す",
     "affiliate_id": "",
     "program_id": "",
     "priority": 8,
     "prefecture_params": {},
     "region_params": {}
+  },
+  "一休.comレストラン": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://restaurant.ikyu.com/search/results/?keyword={CITY}",
+    "label": "{CITY}の高級レストランを予約",
+    "image": "ikyu-restaurant.png",
+    "affiliate_id": "",
+    "program_id": "23449",
+    "priority": 6,
+    "category": "restaurant"
+  },
+  "じゃらんnet": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword={CITY}",
+    "label": "じゃらんで{CITY}の宿を探す",
+    "image": "jalan.png",
+    "affiliate_id": "",
+    "program_id": "5011",
+    "priority": 9
+  },
+  "楽天トラベル(A8)": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://travel.rakuten.co.jp/keyword/search/?f_keyword={CITY}",
+    "label": "楽天トラベルで{CITY}のホテルを探す",
+    "image": "rakuten.png",
+    "affiliate_id": "",
+    "program_id": "4196",
+    "priority": 8
+  },
+  "Relux": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://rlx.jp/search/?q={CITY}",
+    "label": "{CITY}の高級ホテル・旅館を探す",
+    "image": "relux.png",
+    "affiliate_id": "",
+    "program_id": "15359",
+    "priority": 7
+  },
+  "Yahoo!トラベル": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://travel.yahoo.co.jp/search/?p={CITY}",
+    "label": "Yahoo!トラベルで{CITY}の宿を探す",
+    "image": "yahoo-travel.png",
+    "affiliate_id": "",
+    "program_id": "23814",
+    "priority": 7
+  },
+  "海外Wi-FiレンタルのFAST-Fi": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://fast-fi.net/",
+    "label": "海外Wi-Fiレンタルを予約",
+    "image": "fast-fi.png",
+    "affiliate_id": "",
+    "program_id": "23641",
+    "priority": 5,
+    "international_support": true,
+    "international_only": true,
+    "category": "wifi"
+  },
+  "日産レンタカー": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://nissan-rentacar.com/search/?keyword={CITY}",
+    "label": "{CITY}でレンタカーを予約",
+    "image": "nissan-rentacar.png",
+    "affiliate_id": "",
+    "program_id": "2221",
+    "priority": 6,
+    "category": "transport"
+  },
+  "JAL 日本航空 国際線航空券": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.jal.co.jp/inter/",
+    "label": "JALで海外航空券を予約",
+    "image": "jal.png",
+    "affiliate_id": "",
+    "program_id": "4940",
+    "priority": 8,
+    "international_support": true,
+    "international_only": true,
+    "category": "flight"
+  },
+  "ANA（全日空）": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}+{PROGRAM_ID}+0&a8ejpredirect=https://www.ana.co.jp/",
+    "label": "ANAで航空券を予約",
+    "image": "ana.png",
+    "affiliate_id": "",
+    "program_id": "16314",
+    "priority": 8,
+    "category": "flight"
   }
 }

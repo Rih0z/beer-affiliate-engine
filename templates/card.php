@@ -42,7 +42,7 @@
                             <a href="<?php echo esc_url($link['url']); ?>" 
                                target="_blank" 
                                rel="nofollow noopener" 
-                               class="beer-affiliate-button beer-affiliate-button-<?php echo sanitize_html_class(strtolower($service)); ?>"
+                               class="beer-affiliate-link beer-affiliate-button beer-affiliate-button-<?php echo sanitize_html_class(strtolower($service)); ?>"
                                data-service="<?php echo esc_attr($service); ?>" 
                                data-city="<?php echo esc_attr($item['city']['name']); ?>">
                                 <?php echo esc_html($link['label']); ?>

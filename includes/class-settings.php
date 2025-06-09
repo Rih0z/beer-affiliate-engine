@@ -229,7 +229,7 @@ class Beer_Affiliate_Settings {
                name="<?php echo self::OPTION_NAME; ?>[a8_media_id]" 
                value="<?php echo esc_attr($value); ?>" 
                class="regular-text" 
-               placeholder="例: a17092772583" />
+               placeholder="例: 3UJGPC" />
         <p class="description">A8.netのメディアIDを入力してください。</p>
         <?php
     }

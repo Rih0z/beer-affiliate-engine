@@ -111,9 +111,9 @@ class Travel_Link_Generator {
             
             // A8.netのリダイレクトURLの場合、リダイレクト先を抽出
             if (strpos($url, 'a8ejpredirect=') !== false) {
-                // リダイレクトURL部分を抽出
+                // リダイレクトURL部分を抽出（デコードされている場合）
                 if (preg_match('/a8ejpredirect=([^&]+)/', $url, $matches)) {
-                    $redirect_url = $matches[1];
+                    $redirect_url = urldecode($matches[1]);
                     // 一旦リダイレクトURLを除去
                     $url = str_replace('a8ejpredirect=' . $matches[1], 'a8ejpredirect=REDIRECT_URL_PLACEHOLDER', $url);
                 }
@@ -130,6 +130,16 @@ class Travel_Link_Generator {
                     continue;
                 }
                 $url = str_replace('{PROGRAM_ID}', $program_id, $url);
+            }
+            
+            // A8.netのメディアIDを適用（A8.netの場合）
+            if (strpos($url, 'px.a8.net') !== false) {
+                $media_id = get_option('beer_affiliate_a8_media_id', '3UJGPC');
+                if (!empty($media_id)) {
+                    // メディアIDから'a'プレフィックスを削除（もしあれば）
+                    $media_id = ltrim($media_id, 'a');
+                    $url = str_replace('{MEDIA_ID}', $media_id, $url);
+                }
             }
             
             // リダイレクトURLがある場合は先に処理
@@ -222,8 +232,9 @@ class Travel_Link_Generator {
             if (!empty($redirect_url)) {
                 // リダイレクトURLにパラメータを追加
                 $redirect_url = $this->add_tracking_params($redirect_url, $city);
-                // エンコードしてURLに戻す
-                $url = str_replace('a8ejpredirect=REDIRECT_URL_PLACEHOLDER', 'a8ejpredirect=' . urlencode($redirect_url), $url);
+                // 適切にエンコードしてURLに戻す
+                $encoded_redirect_url = rawurlencode($redirect_url);
+                $url = str_replace('a8ejpredirect=REDIRECT_URL_PLACEHOLDER', 'a8ejpredirect=' . $encoded_redirect_url, $url);
             } else {
                 // 通常のURLの場合
                 $url = $this->add_tracking_params($url, $city);
@@ -355,10 +366,15 @@ class Travel_Link_Generator {
         
         // 2. WordPressオプションから取得
         if (empty($affiliate_id)) {
-            $option_name = 'beer_affiliate_' . sanitize_title($service) . '_id';
-            $option_value = get_option($option_name);
-            if (!empty($option_value)) {
-                $affiliate_id = $option_value;
+            // 楽天トラベルの場合は専用オプションを確認
+            if ($service === '楽天トラベル') {
+                $affiliate_id = get_option('beer_affiliate_rakuten_travel_id', '');
+            } else {
+                $option_name = 'beer_affiliate_' . sanitize_title($service) . '_id';
+                $option_value = get_option($option_name);
+                if (!empty($option_value)) {
+                    $affiliate_id = $option_value;
+                }
             }
         }
         

@@ -131,7 +131,7 @@ class Beer_Affiliate_Customizer {
         
         // A8.netメディアID
         $wp_customize->add_setting('beer_affiliate_a8_media_id', array(
-            'default' => 'a17092772583',
+            'default' => '3UJGPC',
             'transport' => 'refresh',
             'sanitize_callback' => 'sanitize_text_field'
         ));

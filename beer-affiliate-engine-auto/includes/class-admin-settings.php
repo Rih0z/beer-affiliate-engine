@@ -43,6 +43,15 @@ class Beer_Affiliate_Admin_Settings {
             'beer-affiliate-help',
             array($this, 'help_page')
         );
+        
+        add_submenu_page(
+            self::MENU_SLUG,
+            'リンク検証',
+            'リンク検証',
+            'manage_options',
+            'beer-affiliate-validate',
+            array($this, 'validate_page')
+        );
     }
     
     public function register_settings() {
@@ -211,14 +220,9 @@ class Beer_Affiliate_Admin_Settings {
                             <td>1013646616942500290</td>
                         </tr>
                         <tr>
-                            <td>{PROGRAM_ID}</td>
-                            <td>プログラムID（A8.net）</td>
-                            <td>s00000005350001</td>
-                        </tr>
-                        <tr>
-                            <td>{MEDIA_ID}</td>
-                            <td>メディアID（A8.net）</td>
-                            <td>a17092772583</td>
+                            <td>{A8MAT}</td>
+                            <td>A8.netの認証パラメータ</td>
+                            <td>17092772583+s000005350001</td>
                         </tr>
                         <tr>
                             <td>{COUNTRY}</td>
@@ -228,17 +232,48 @@ class Beer_Affiliate_Admin_Settings {
                     </tbody>
                 </table>
                 
+                <h3>生成されるURLの例</h3>
+                <div style="background: #f1f1f1; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                    <h4>楽天トラベル（東京の場合）</h4>
+                    <code style="word-break: break-all;">https://hb.afl.rakuten.co.jp/hgc/20a2fc9d.5c6c02f2.20a2fc9e.541a36d0/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2Fsearch%2F%3Ff_area%3D%E6%9D%B1%E4%BA%AC%26f_keyword%3D%E6%9D%B1%E4%BA%AC%2B%25E3%2582%25AF%25E3%2583%25A9%25E3%2583%2595%25E3%2583%2588%25E3%2583%2593%25E3%2583%25BC%25E3%2583%25AB&m=...</code>
+                    
+                    <h4 style="margin-top: 15px;">A8.net JTB</h4>
+                    <code style="word-break: break-all;">https://px.a8.net/svt/ejp?a8mat=17092772583+s000005350001&a8ejpredirect=https%3A%2F%2Fwww.jtb.co.jp%2F</code>
+                </div>
+                
                 <h3>プログラム例</h3>
                 <h4>楽天トラベル</h4>
                 <pre>
-URL: https://travel.rakuten.co.jp/hotel/search/?f_area={CITY}&f_keyword={CITY}+クラフトビール&f_affiliate_id={AFFILIATE_ID}
+URL: https://hb.afl.rakuten.co.jp/hgc/{AFFILIATE_ID}/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2Fsearch%2F%3Ff_area%3D{CITY}%26f_keyword%3D{CITY}%2B%25E3%2582%25AF%25E3%2583%25A9%25E3%2583%2595%25E3%2583%2588%25E3%2583%2593%25E3%2583%25BC%25E3%2583%25AB&m=https%3A%2F%2Ftravel.rakuten.co.jp%2Fsearch%2F%3Ff_area%3D{CITY}%26f_keyword%3D{CITY}%2B%25E3%2582%25AF%25E3%2583%25A9%25E3%2583%2595%25E3%2583%2588%25E3%2583%2593%25E3%2583%25BC%25E3%2583%25AB
 ラベル: 楽天トラベルで{CITY}のホテルを探す
                 </pre>
                 
                 <h4>A8.net（JTB）</h4>
                 <pre>
-URL: https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.jtb.co.jp/kokunai/hotel/{CITY}/
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000005350001&a8ejpredirect=https://www.jtb.co.jp/kokunai/hotel/list/{CITY}/
 ラベル: JTBで{CITY}のホテルを予約
+プログラムID: 5350
+                </pre>
+                
+                <h4>その他のA8.netプログラム例</h4>
+                <pre>
+# 一休.comレストラン（プログラムID: 23449）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000023449001&a8ejpredirect=https://restaurant.ikyu.com/area/{CITY}/
+
+# じゃらんnet（プログラムID: 5011）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000005011001&a8ejpredirect=https://www.jalan.net/{CITY}/
+
+# Yahoo!トラベル（プログラムID: 23814）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000023814001&a8ejpredirect=https://travel.yahoo.co.jp/domestic/area/{CITY}/
+
+# Relux（プログラムID: 15359）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000015359001&a8ejpredirect=https://rlx.jp/search/?area={CITY}
+
+# JAL 国際線（プログラムID: 4940）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000004940001&a8ejpredirect=https://www.jal.co.jp/inter/
+
+# ANA（プログラムID: 16314）
+URL: https://px.a8.net/svt/ejp?a8mat={MEDIA_ID}b8a3aa7-s00000016314001&a8ejpredirect=https://www.ana.co.jp/
                 </pre>
                 
                 <h3>トラブルシューティング</h3>
@@ -325,5 +360,101 @@ URL: https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.jtb.
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('beer_affiliate_admin')
         ));
+    }
+    
+    public function validate_page() {
+        // リンク検証クラスを読み込み
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-link-validator.php';
+        
+        $programs = get_option('beer_affiliate_programs', array());
+        ?>
+        <div class="wrap">
+            <h1>Beer Affiliate Engine - リンク検証</h1>
+            
+            <div class="beer-affiliate-help">
+                <h2>🔍 アフィリエイトリンク検証ツール</h2>
+                <p>このツールは、設定されているアフィリエイトプログラムのリンクが正しく機能するか検証します。</p>
+                
+                <?php if (!empty($programs)) : ?>
+                    <h3>検証結果</h3>
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th>プログラム名</th>
+                                <th>状態</th>
+                                <th>詳細</th>
+                                <th>テストURL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $validation_results = Beer_Affiliate_Link_Validator::validate_all_links($programs);
+                            foreach ($validation_results as $key => $result) :
+                            ?>
+                            <tr>
+                                <td><?php echo esc_html($result['program_name']); ?></td>
+                                <td>
+                                    <?php if ($result['validation']['valid']) : ?>
+                                        <span class="dashicons dashicons-yes" style="color: #46b450;"></span> 有効
+                                    <?php else : ?>
+                                        <span class="dashicons dashicons-warning" style="color: #dc3232;"></span> 問題あり
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php 
+                                    if ($result['validation']['valid']) {
+                                        echo '正常に動作しています';
+                                    } else {
+                                        echo esc_html($result['validation']['reason']);
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <button class="button button-small" onclick="navigator.clipboard.writeText('<?php echo esc_js($result['test_url']); ?>'); alert('URLをコピーしました');">
+                                        URLをコピー
+                                    </button>
+                                    <a href="<?php echo esc_url($result['test_url']); ?>" target="_blank" class="button button-small">
+                                        テスト
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    
+                    <h3>信頼できるドメイン一覧</h3>
+                    <div style="background: #f1f1f1; padding: 15px; border-radius: 4px;">
+                        <p>以下のドメインへのリダイレクトのみ許可されます：</p>
+                        <ul style="column-count: 2;">
+                            <li>travel.rakuten.co.jp（楽天トラベル）</li>
+                            <li>www.jtb.co.jp（JTB）</li>
+                            <li>restaurant.ikyu.com（一休.com）</li>
+                            <li>www.jalan.net（じゃらん）</li>
+                            <li>rlx.jp（Relux）</li>
+                            <li>travel.yahoo.co.jp（Yahoo!トラベル）</li>
+                            <li>www.yomiuri-ryokou.co.jp（読売旅行）</li>
+                            <li>otomoni.net（Otomoni）</li>
+                            <li>fast-fi.net（FAST-Fi）</li>
+                            <li>nissan-rentacar.com（日産レンタカー）</li>
+                            <li>www.jal.co.jp（JAL）</li>
+                            <li>www.ana.co.jp（ANA）</li>
+                            <li>www.t-standard.com（TRAVEL STANDARD）</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>検証内容</h3>
+                    <ul>
+                        <li>URLフォーマットが正しいか</li>
+                        <li>必要なパラメータが含まれているか</li>
+                        <li>リダイレクト先が信頼できるドメインか</li>
+                        <li>アフィリエイトIDが正しく設定されているか</li>
+                    </ul>
+                    
+                <?php else : ?>
+                    <p>まだプログラムが設定されていません。</p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
     }
 }
