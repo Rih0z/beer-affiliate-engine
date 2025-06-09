@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.4.2
+ * Version: 1.4.3
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,18 +17,21 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.4.2');
+define('BEER_AFFILIATE_VERSION', '1.4.3');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// 有効化時の処理（最小限）
+// 有効化時の処理
 function beer_affiliate_activate() {
-    // バージョン情報のみ保存
+    // バージョン情報を保存
     add_option('beer_affiliate_version', BEER_AFFILIATE_VERSION);
     
     // デフォルト設定
     add_option('beer_affiliate_template', 'card');
     add_option('beer_affiliate_primary_module', 'travel');
+    
+    // データベーステーブルの作成は初回実行時に行う
+    add_option('beer_affiliate_db_version', '1.0');
     
     // 書き換えルールをフラッシュ
     flush_rewrite_rules();
@@ -51,7 +54,7 @@ function beer_affiliate_init() {
     // 必要なファイルを安全に読み込み
     $required_files = array(
         'includes/class-data-store.php',
-        'includes/class-analytics.php',
+        'includes/class-analytics-safe.php',  // 安全版を使用
         'includes/class-content-analyzer.php',
         'includes/class-link-generator.php',
         'includes/class-display-manager.php',
@@ -62,9 +65,26 @@ function beer_affiliate_init() {
     
     foreach ($required_files as $file) {
         $file_path = BEER_AFFILIATE_PLUGIN_DIR . $file;
-        if (file_exists($file_path)) {
-            require_once $file_path;
+        // 安全版のAnalyticsクラスを優先的に読み込み
+        if ($file === 'includes/class-analytics-safe.php') {
+            if (file_exists($file_path)) {
+                require_once $file_path;
+            } elseif (file_exists(BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-analytics.php')) {
+                require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-analytics.php';
+            }
+        } else {
+            if (file_exists($file_path)) {
+                require_once $file_path;
+            }
         }
+    }
+    
+    // データベーステーブルの作成（初回のみ）
+    if (get_option('beer_affiliate_db_version') !== '1.1') {
+        if (class_exists('Beer_Affiliate_Analytics')) {
+            Beer_Affiliate_Analytics::create_tables();
+        }
+        update_option('beer_affiliate_db_version', '1.1');
     }
     
     // コアクラスが読み込まれている場合のみ初期化
@@ -121,13 +141,16 @@ function beer_affiliate_hotels_shortcode($atts) {
         // 記事から都市名を自動検出
         global $post;
         if ($post && $post->post_content) {
-            if (!class_exists('Travel_Content_Analyzer')) {
-                require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
-            }
-            $analyzer = new Travel_Content_Analyzer();
-            $cities = $analyzer->analyze($post->post_content);
-            if (!empty($cities)) {
-                $args['city'] = $cities[0]['name'];
+            $analyzer_file = BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
+            if (file_exists($analyzer_file)) {
+                require_once $analyzer_file;
+                if (class_exists('Travel_Content_Analyzer')) {
+                    $analyzer = new Travel_Content_Analyzer();
+                    $cities = $analyzer->analyze($post->post_content);
+                    if (!empty($cities)) {
+                        $args['city'] = $cities[0]['name'];
+                    }
+                }
             }
         }
     }
@@ -137,28 +160,34 @@ function beer_affiliate_hotels_shortcode($atts) {
     }
     
     // 宿泊施設情報を取得
-    if (!class_exists('Travel_Link_Generator')) {
-        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-link-generator.php';
-    }
-    if (!class_exists('Travel_API_Client')) {
-        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
-    }
-    
-    $link_generator = new Travel_Link_Generator();
-    $api_client = new Travel_API_Client();
-    
-    $options = array(
-        'hits' => intval($args['count']),
-        'sort' => $args['sort'] === 'rating' ? '-reviewAverage' : '+roomCharge'
+    $api_files = array(
+        'modules/travel/class-travel-link-generator.php',
+        'modules/travel/class-travel-api-client.php'
     );
     
-    $hotels = $api_client->search_hotels($args['city'], $options);
-    
-    if (empty($hotels)) {
-        return '';
+    foreach ($api_files as $file) {
+        $file_path = BEER_AFFILIATE_PLUGIN_DIR . $file;
+        if (file_exists($file_path) && !class_exists(basename($file, '.php'))) {
+            require_once $file_path;
+        }
     }
     
-    return $api_client->render_hotels($hotels);
+    if (class_exists('Travel_API_Client')) {
+        $api_client = new Travel_API_Client();
+        
+        $options = array(
+            'hits' => intval($args['count']),
+            'sort' => $args['sort'] === 'rating' ? '-reviewAverage' : '+roomCharge'
+        );
+        
+        $hotels = $api_client->search_hotels($args['city'], $options);
+        
+        if (!empty($hotels)) {
+            return $api_client->render_hotels($hotels);
+        }
+    }
+    
+    return '';
 }
 add_shortcode('beer_affiliate_hotels', 'beer_affiliate_hotels_shortcode');
 
@@ -183,7 +212,10 @@ $plugin_file = plugin_basename(__FILE__);
 add_filter("plugin_action_links_$plugin_file", 'beer_affiliate_settings_link');
 
 // カスタマイザー設定を安全に読み込み
-$customizer_file = BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-customizer.php';
-if (file_exists($customizer_file)) {
-    require_once $customizer_file;
+function beer_affiliate_load_customizer() {
+    $customizer_file = BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-customizer.php';
+    if (file_exists($customizer_file)) {
+        require_once $customizer_file;
+    }
 }
+add_action('customize_register', 'beer_affiliate_load_customizer');
