@@ -1,6 +1,6 @@
 {
   "楽天トラベル": {
-    "url": "https://hb.afl.rakuten.co.jp/hgc/{AFFILIATE_ID}/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2F%3Fs%3D{CITY}&m=https%3A%2F%2Ftravel.rakuten.co.jp%2F%3Fs%3D{CITY}",
+    "url": "https://hb.afl.rakuten.co.jp/hgc/{AFFILIATE_ID}/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2Fkeyword%2Fsearch%2F%3Ff_keyword%3D{CITY}&m=https%3A%2F%2Ftravel.rakuten.co.jp%2Fkeyword%2Fsearch%2F%3Ff_keyword%3D{CITY}",
     "label": "{CITY}のホテルを楽天トラベルで探す",
     "image": "rakuten.png",
     "affiliate_id": "",
