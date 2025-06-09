@@ -454,6 +454,13 @@ class Travel_Link_Generator {
         // URLに適用
         if (!empty($affiliate_id)) {
             $url = str_replace('{AFFILIATE_ID}', $affiliate_id, $url);
+        } else if ($service === '楽天トラベル' && strpos($url, '{AFFILIATE_ID}') !== false) {
+            // アフィリエイトIDが設定されていない場合は、直接リンクを使用
+            $this->debug_log("楽天アフィリエイトIDが未設定のため、直接リンクを使用");
+            // エンコードされたURLを抽出
+            if (preg_match('/pc=(https%3A%2F%2F[^&]+)/', $url, $matches)) {
+                $url = urldecode($matches[1]);
+            }
         }
         
         return $url;
