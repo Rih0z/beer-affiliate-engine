@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.3.7
+ * Version: 1.4.0
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.3.7');
+define('BEER_AFFILIATE_VERSION', '1.4.0');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -90,6 +90,8 @@ function beer_affiliate_shortcode($atts) {
         'template' => get_option('beer_affiliate_template', 'card'),
         'max_links' => 2,
         'module' => get_option('beer_affiliate_primary_module', 'travel'),
+        'show_hotels' => false,
+        'hotel_count' => 3,
     ), $atts, 'beer_affiliate');
     
     // コアクラスが利用可能な場合のみ処理
@@ -106,6 +108,53 @@ function beer_affiliate_shortcode($atts) {
     return '';
 }
 add_shortcode('beer_affiliate', 'beer_affiliate_shortcode');
+
+// 宿泊施設表示用のショートコード
+function beer_affiliate_hotels_shortcode($atts) {
+    $args = shortcode_atts(array(
+        'city' => '',
+        'count' => 3,
+        'sort' => 'price', // price, rating
+    ), $atts, 'beer_affiliate_hotels');
+    
+    if (empty($args['city'])) {
+        // 記事から都市名を自動検出
+        global $post;
+        if ($post && $post->post_content) {
+            require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
+            $analyzer = new Travel_Content_Analyzer();
+            $cities = $analyzer->analyze($post->post_content);
+            if (!empty($cities)) {
+                $args['city'] = $cities[0]['name'];
+            }
+        }
+    }
+    
+    if (empty($args['city'])) {
+        return '';
+    }
+    
+    // 宿泊施設情報を取得
+    require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-link-generator.php';
+    require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+    
+    $link_generator = new Travel_Link_Generator();
+    $api_client = new Travel_API_Client();
+    
+    $options = array(
+        'hits' => intval($args['count']),
+        'sort' => $args['sort'] === 'rating' ? '-reviewAverage' : '+roomCharge'
+    );
+    
+    $hotels = $api_client->search_hotels($args['city'], $options);
+    
+    if (empty($hotels)) {
+        return '';
+    }
+    
+    return $api_client->render_hotels($hotels);
+}
+add_shortcode('beer_affiliate_hotels', 'beer_affiliate_hotels_shortcode');
 
 // CSSとJSを読み込み（最小限）
 function beer_affiliate_enqueue_scripts() {

@@ -105,6 +105,19 @@ class Travel_Link_Generator {
     }
     
     /**
+     * 宿泊施設情報を取得（API使用）
+     * 
+     * @param string $city_name 都市名
+     * @param array $options オプション
+     * @return array 宿泊施設情報
+     */
+    public function get_hotels($city_name, $options = array()) {
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-api-client.php';
+        $api_client = new Travel_API_Client();
+        return $api_client->search_hotels($city_name, $options);
+    }
+    
+    /**
      * 地域情報に基づいてアフィリエイトリンクを生成
      * 
      * @param array $city 地域情報
