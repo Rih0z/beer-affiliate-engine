@@ -30,6 +30,21 @@ class Travel_Link_Generator {
     }
     
     /**
+     * デバッグ情報を出力
+     * 
+     * @param string $message メッセージ
+     * @param mixed $data データ
+     */
+    private function debug_log($message, $data = null) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[Beer Affiliate Travel] ' . $message);
+            if ($data !== null) {
+                error_log(print_r($data, true));
+            }
+        }
+    }
+    
+    /**
      * リンクテンプレートをロード
      * 
      * @return array リンクテンプレート
@@ -63,7 +78,10 @@ class Travel_Link_Generator {
         $prefecture = isset($city['prefecture']) ? $city['prefecture'] : '';
         $country = isset($city['country']) ? $city['country'] : '日本';
         
+        $this->debug_log('Generating links for city', $city);
+        
         if (empty($city_name)) {
+            $this->debug_log('City name is empty, returning empty links');
             return $links;
         }
         
@@ -72,6 +90,8 @@ class Travel_Link_Generator {
         
         // 各サービスのリンクを生成
         foreach ($this->link_templates as $service => $template) {
+            // A8.netのリダイレクトURLを一時保存
+            $redirect_url = '';
             // 国内/海外のフィルタリング
             if ($is_international && !isset($template['international_support'])) {
                 // 海外対応していないサービスはスキップ
@@ -86,20 +106,54 @@ class Travel_Link_Generator {
                 continue;
             }
             
-            // A8プログラムIDがある場合は適用
-            if (isset($template['program_id'])) {
-                $url = str_replace('{PROGRAM_ID}', $template['program_id'], $template['url']);
-            } else {
-                $url = $template['url'];
+            // URLを初期化
+            $url = $template['url'];
+            
+            // A8.netのリダイレクトURLの場合、リダイレクト先を抽出
+            if (strpos($url, 'a8ejpredirect=') !== false) {
+                // リダイレクトURL部分を抽出
+                if (preg_match('/a8ejpredirect=([^&]+)/', $url, $matches)) {
+                    $redirect_url = $matches[1];
+                    // 一旦リダイレクトURLを除去
+                    $url = str_replace('a8ejpredirect=' . $matches[1], 'a8ejpredirect=REDIRECT_URL_PLACEHOLDER', $url);
+                }
             }
             
+            // プログラムIDを取得（設定優先、なければテンプレートから）
+            $program_id = $this->get_program_id($service, $template);
+            
+            // A8プログラムIDがある場合は適用
+            if (isset($template['program_id']) || !empty($program_id)) {
+                // プログラムIDが未設定の場合はスキップ
+                if (empty($program_id)) {
+                    $this->debug_log("Skipping $service - program ID not configured");
+                    continue;
+                }
+                $url = str_replace('{PROGRAM_ID}', $program_id, $url);
+            }
+            
+            // リダイレクトURLがある場合は先に処理
+            if (!empty($redirect_url)) {
+                // リダイレクトURL内の変数を置換
+                $redirect_url = str_replace('{CITY}', rawurlencode($city_name), $redirect_url);
+            }
+            
+            $this->debug_log("Processing $service - initial URL: $url");
+            
             // URLテンプレートに地域名を適用
-            $url = str_replace('{CITY}', urlencode($city_name), $url);
+            if (empty($redirect_url)) {
+                // 通常のURLの場合
+                $url = str_replace('{CITY}', rawurlencode($city_name), $url);
+            }
             
             // 都市コードがある場合は適用
             if (isset($template['city_codes']) && isset($template['city_codes'][$city_name])) {
                 $city_code = $template['city_codes'][$city_name];
-                $url = str_replace('{CITY_CODE}', $city_code, $url);
+                if (!empty($redirect_url)) {
+                    $redirect_url = str_replace('{CITY_CODE}', $city_code, $redirect_url);
+                } else {
+                    $url = str_replace('{CITY_CODE}', $city_code, $url);
+                }
             }
             
             // 国コードがある場合は適用（海外用）
@@ -126,7 +180,14 @@ class Travel_Link_Generator {
                     : '';
                 
                 if (!empty($prefecture_param)) {
-                    $url = str_replace('{PREFECTURE}', $prefecture_param, $url);
+                    if (!empty($redirect_url)) {
+                        // リダイレクトURLにパラメータを追加
+                        $redirect_url .= $prefecture_param;
+                    } else {
+                        // 通常のURLにパラメータを追加
+                        $url .= $prefecture_param;
+                    }
+                    $this->debug_log("Added prefecture param for $service: $prefecture_param");
                 }
             }
             
@@ -137,7 +198,14 @@ class Travel_Link_Generator {
                     : '';
                 
                 if (!empty($region_param)) {
-                    $url = str_replace('{REGION}', $region_param, $url);
+                    if (!empty($redirect_url)) {
+                        // リダイレクトURLにパラメータを追加
+                        $redirect_url .= $region_param;
+                    } else {
+                        // 通常のURLにパラメータを追加
+                        $url .= $region_param;
+                    }
+                    $this->debug_log("Added region param for $service: $region_param");
                 }
             }
             
@@ -150,8 +218,32 @@ class Travel_Link_Generator {
             // アフィリエイトIDを適用
             $url = $this->apply_affiliate_id($url, $service, $template);
             
-            // トラッキングパラメータを追加
-            $url = $this->add_tracking_params($url, $city);
+            // リダイレクトURLがある場合はトラッキングパラメータを追加
+            if (!empty($redirect_url)) {
+                // リダイレクトURLにパラメータを追加
+                $redirect_url = $this->add_tracking_params($redirect_url, $city);
+                // エンコードしてURLに戻す
+                $url = str_replace('a8ejpredirect=REDIRECT_URL_PLACEHOLDER', 'a8ejpredirect=' . urlencode($redirect_url), $url);
+            } else {
+                // 通常のURLの場合
+                $url = $this->add_tracking_params($url, $city);
+            }
+            
+            // 未置換の変数がないかチェック
+            $check_url = !empty($redirect_url) ? $redirect_url : $url;
+            if (preg_match('/\{[A-Z_]+\}/', $check_url, $matches)) {
+                $this->debug_log("Warning: Unreplaced variables in $service URL", array(
+                    'url' => $check_url,
+                    'unreplaced' => $matches
+                ));
+                // 必須変数が置換されていない場合はスキップ
+                if (in_array($matches[0], array('{CITY_CODE}', '{COUNTRY_CODE}', '{AFFILIATE_ID}'))) {
+                    $this->debug_log("Skipping $service - required variable not replaced: " . $matches[0]);
+                    continue;
+                }
+            }
+            
+            $this->debug_log("Final URL for $service: $url");
             
             // サービスのカテゴリーを設定（デフォルトは'travel'）
             $category = isset($template['category']) ? $template['category'] : 'travel';
@@ -214,6 +306,35 @@ class Travel_Link_Generator {
     }
     
     /**
+     * プログラムIDを取得
+     * 
+     * @param string $service サービス名
+     * @param array $template テンプレート情報
+     * @return string プログラムID
+     */
+    private function get_program_id($service, $template) {
+        // 1. wp-config.phpの定数から取得を試みる
+        $constant_name = 'BEER_AFFILIATE_' . strtoupper(str_replace(array('-', ' ', '（', '）', '(', ')'), '_', $service)) . '_PROGRAM_ID';
+        if (defined($constant_name)) {
+            return constant($constant_name);
+        }
+        
+        // 2. WordPressオプションから取得
+        $option_name = 'beer_affiliate_' . sanitize_title($service) . '_program_id';
+        $option_value = get_option($option_name);
+        if (!empty($option_value)) {
+            return $option_value;
+        }
+        
+        // 3. テンプレートから取得
+        if (isset($template['program_id']) && !empty($template['program_id'])) {
+            return $template['program_id'];
+        }
+        
+        return '';
+    }
+    
+    /**
      * アフィリエイトIDを適用
      * 
      * @param string $url URL
@@ -222,15 +343,33 @@ class Travel_Link_Generator {
      * @return string 更新されたURL
      */
     private function apply_affiliate_id($url, $service, $template) {
-        // テンプレートに含まれるアフィリエイトIDを適用
-        if (isset($template['affiliate_id'])) {
-            $url = str_replace('{AFFILIATE_ID}', $template['affiliate_id'], $url);
+        // アフィリエイトIDを取得（優先順位：定数 > オプション > テンプレート）
+        $affiliate_id = '';
+        
+        // 1. wp-config.phpの定数から取得
+        if ($service === '楽天トラベル' && defined('BEER_AFFILIATE_RAKUTEN_ID')) {
+            $affiliate_id = BEER_AFFILIATE_RAKUTEN_ID;
+        } elseif (defined('BEER_AFFILIATE_A8_ID')) {
+            $affiliate_id = BEER_AFFILIATE_A8_ID;
         }
         
-        // カスタマイズ設定のアフィリエイトIDを優先適用
-        $custom_id = get_option('beer_affiliate_' . sanitize_title($service) . '_id');
-        if (!empty($custom_id)) {
-            $url = str_replace('{AFFILIATE_ID}', $custom_id, $url);
+        // 2. WordPressオプションから取得
+        if (empty($affiliate_id)) {
+            $option_name = 'beer_affiliate_' . sanitize_title($service) . '_id';
+            $option_value = get_option($option_name);
+            if (!empty($option_value)) {
+                $affiliate_id = $option_value;
+            }
+        }
+        
+        // 3. テンプレートから取得
+        if (empty($affiliate_id) && isset($template['affiliate_id']) && !empty($template['affiliate_id'])) {
+            $affiliate_id = $template['affiliate_id'];
+        }
+        
+        // URLに適用
+        if (!empty($affiliate_id)) {
+            $url = str_replace('{AFFILIATE_ID}', $affiliate_id, $url);
         }
         
         return $url;

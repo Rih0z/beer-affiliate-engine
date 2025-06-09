@@ -1,0 +1,38 @@
+{
+  "README": "これは設定例です。実際のアフィリエイトIDは管理画面から設定してください。",
+  "楽天トラベル": {
+    "affiliate_id": "YOUR_RAKUTEN_AFFILIATE_ID"
+  },
+  "JTB国内旅行": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_JTB_PROGRAM_ID"
+  },
+  "HIS": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_HIS_PROGRAM_ID"
+  },
+  "トラベル・スタンダード・ジャパン": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_TRAVEL_STANDARD_PROGRAM_ID"
+  },
+  "JTBショッピング": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_JTB_SHOPPING_PROGRAM_ID"
+  },
+  "カタール航空": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_QATAR_PROGRAM_ID"
+  },
+  "Travelist": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_TRAVELIST_PROGRAM_ID"
+  },
+  "Oooh(ウー)": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_OOOH_PROGRAM_ID"
+  },
+  "Saily": {
+    "affiliate_id": "YOUR_A8_AFFILIATE_ID",
+    "program_id": "YOUR_SAILY_PROGRAM_ID"
+  }
+}

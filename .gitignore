@@ -1,0 +1,43 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# WordPress plugin build files
+*.zip
+beer-affiliate-engine.zip
+beer-affiliate-engine-auto.zip
+
+# Node modules (if any)
+node_modules/
+
+# Composer vendor (if any)
+vendor/
+
+# Test files
+test-*.php
+
+# Cache files
+*.cache
+
+# Affiliate configuration files (contains sensitive data)
+affiliate-config.json
+affiliate-config-*.json
+!affiliate-config-sample.json
+config-templates/affiliate-config.json
+config-templates/affiliate-config-*.json
+!config-templates/affiliate-config-sample.json
+
+# User uploaded files
+wp-content/uploads/beer-affiliate/

@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.0.0
+ * Version: 1.3.0
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.0.0');
+define('BEER_AFFILIATE_VERSION', '1.3.0');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -27,6 +27,7 @@ require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-content-analyzer.php';
 require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-link-generator.php';
 require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-display-manager.php';
 require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-data-store.php';
+require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-analytics.php';
 
 // モジュールインターフェースと基本クラスを読み込み
 require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/interface-affiliate-module.php';
@@ -40,6 +41,11 @@ function beer_affiliate_init() {
     // コアを初期化
     $core = new Beer_Affiliate_Core();
     $core->init();
+    
+    // 設定画面を初期化（管理画面のみ）
+    if (is_admin()) {
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-settings.php';
+    }
 }
 add_action('plugins_loaded', 'beer_affiliate_init');
 
@@ -60,6 +66,9 @@ function beer_affiliate_activate() {
     if (!get_option('beer_affiliate_primary_module')) {
         add_option('beer_affiliate_primary_module', 'travel');
     }
+    
+    // クリック追跡用のテーブルを作成
+    Beer_Affiliate_Analytics::create_tables();
     
     // 書き換えルールをフラッシュ
     flush_rewrite_rules();
@@ -117,6 +126,15 @@ function beer_affiliate_enqueue_scripts() {
         if ($template === 'sticky') {
             wp_enqueue_script('beer-affiliate-sticky', BEER_AFFILIATE_PLUGIN_URL . 'assets/js/sticky.js', array('jquery'), BEER_AFFILIATE_VERSION, true);
         }
+        
+        // クリック追跡スクリプトを読み込み
+        wp_enqueue_script('beer-affiliate-tracker', BEER_AFFILIATE_PLUGIN_URL . 'assets/js/click-tracker.js', array('jquery'), BEER_AFFILIATE_VERSION, true);
+        wp_localize_script('beer-affiliate-tracker', 'beer_affiliate_tracker', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('beer_affiliate_click'),
+            'post_id' => get_the_ID(),
+            'debug' => defined('WP_DEBUG') && WP_DEBUG
+        ));
     }
 }
 add_action('wp_enqueue_scripts', 'beer_affiliate_enqueue_scripts');

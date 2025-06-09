@@ -3,7 +3,7 @@
     "url": "https://travel.rakuten.co.jp/hotel/search/?f_area={CITY}&f_teikei=premium&f_sort=review_high&f_disp=normal&f_points_min=4&f_limit=20&f_static=1&f_rm_equip=2&f_keyword={CITY}&f_affiliate_id={AFFILIATE_ID}",
     "label": "{CITY}のホテルを楽天トラベルで探す",
     "image": "rakuten.png",
-    "affiliate_id": "20a2fc9d.5c6c02f2.20a2fc9e.541a36d0",
+    "affiliate_id": "",
     "priority": 10,
     "prefecture_params": {
       "北海道": "&area_code=hokkaido",
@@ -35,8 +35,8 @@
     "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+61B8KY+15A4+64Z8Z&a8ejpredirect=https://www.jtb.co.jp/kokunai/pkg/city/{CITY}/?utm_source=affiliate&utm_medium=blog&utm_campaign=beer",
     "label": "JTBで{CITY}の旅行プランを見る",
     "image": "jtb.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "4530O4+61B8KY+15A4+64Z8Z",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 9,
     "prefecture_params": {
       "北海道": "&pref=hokkaido",
@@ -65,8 +65,8 @@
     "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.his-j.com/search/detail.html?key={CITY}&emk=beer_aff",
     "label": "HISで{CITY}ツアーを探す",
     "image": "his.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "ここにA8プログラムIDを入力",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 7,
     "prefecture_params": {
       "北海道": "&pref=01",
@@ -84,14 +84,16 @@
       "中国": "&rgn=chugoku",
       "四国": "&rgn=shikoku",
       "海外": "&overseas=1"
-    }
+    },
+    "disabled": true,
+    "disable_reason": "プログラムに参加していない"
   },
   "トラベル・スタンダード・ジャパン": {
     "url": "https://px.a8.net/svt/ejp?a8mat=s00000026123001005000&a8ejpredirect=https://www.travel-standard.com/search/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}へのオーダーメイド旅行プラン",
     "image": "travel-standard.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "s00000026123001005000",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 8,
     "international_support": true,
     "country_params": {
@@ -103,8 +105,8 @@
     "url": "https://px.a8.net/svt/ejp?a8mat=s00000018449001012000&a8ejpredirect=https://shopping.jtb.co.jp/search/?q={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}の名産品をお取り寄せ",
     "image": "jtb-shopping.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "s00000018449001012000",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 5,
     "category": "shopping"
   },
@@ -112,8 +114,8 @@
     "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+64AELU+5NMU+5YJRM&a8ejpredirect=https://www.qatarairways.com/ja-jp/destinations/{CITY_CODE}.html?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "カタール航空で{CITY}へ",
     "image": "qatar.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "4530O4+64AELU+5NMU+5YJRM",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 6,
     "international_support": true,
     "international_only": true,
@@ -123,15 +125,18 @@
       "サンディエゴ": "san",
       "ニューヨーク": "nyc",
       "バンクーバー": "yvr",
-      "ポートランド": "pdx"
+      "ポートランド": "pdx",
+      "ミュンヘン": "muc",
+      "ブリュッセル": "bru",
+      "プラハ": "prg"
     }
   },
   "Travelist": {
     "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+63OZ02+4XZI+HVFKY&a8ejpredirect=https://www.travelist.co.jp/search/flight/?destination={CITY}&utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}行き格安航空券を探す",
     "image": "travelist.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "4530O4+63OZ02+4XZI+HVFKY",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 7,
     "international_support": true,
     "international_only": true
@@ -140,8 +145,8 @@
     "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+7VZSC2+5OEM+5YRHE&a8ejpredirect=https://oooh.io/destinations/{CITY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}の現地オプショナルツアー",
     "image": "oooh.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "4530O4+7VZSC2+5OEM+5YRHE",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 7,
     "international_support": true,
     "international_only": true,
@@ -151,21 +156,27 @@
       "サンディエゴ": "san-diego",
       "ニューヨーク": "new-york",
       "バンクーバー": "vancouver",
-      "ポートランド": "portland"
+      "ポートランド": "portland",
+      "ミュンヘン": "munich",
+      "ブリュッセル": "brussels",
+      "プラハ": "prague"
     }
   },
   "Saily": {
     "url": "https://px.a8.net/svt/ejp?a8mat=4530O4+5WJRQQ+5L2C+5YRHE&a8ejpredirect=https://saily.app/destinations/{COUNTRY_CODE}?utm_source=affiliate&utm_medium=a8&utm_campaign=beer_blog",
     "label": "{CITY}旅行用のeSIMを購入",
     "image": "saily.png",
-    "affiliate_id": "a17092772583",
-    "program_id": "4530O4+5WJRQQ+5L2C+5YRHE",
+    "affiliate_id": "",
+    "program_id": "",
     "priority": 4,
     "international_support": true,
     "international_only": true,
     "country_codes": {
       "アメリカ": "usa",
-      "カナダ": "canada"
+      "カナダ": "canada",
+      "ドイツ": "germany",
+      "ベルギー": "belgium",
+      "チェコ": "czech-republic"
     }
   },
   "エクスペディア": {
@@ -191,5 +202,14 @@
     "priority": 1,
     "international_support": true,
     "disabled": true
+  },
+  "読売旅行": {
+    "url": "https://px.a8.net/svt/ejp?a8mat={PROGRAM_ID}&a8ejpredirect=https://www.yomiuri-ryokou.co.jp/search/?keyword={CITY}",
+    "label": "読売旅行で{CITY}のツアーを探す",
+    "affiliate_id": "",
+    "program_id": "",
+    "priority": 8,
+    "prefecture_params": {},
+    "region_params": {}
   }
 }

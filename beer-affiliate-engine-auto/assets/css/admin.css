@@ -1,0 +1,144 @@
+/**
+ * Beer Affiliate Engine 管理画面スタイル
+ */
+
+.beer-affiliate-admin {
+    max-width: 1200px;
+    margin-top: 20px;
+}
+
+.program-list {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-bottom: 30px;
+}
+
+.add-program-form {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.add-program-form h2,
+.program-list h2 {
+    margin-top: 0;
+}
+
+/* フォームスタイル */
+.form-table textarea.large-text {
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-table .description {
+    font-style: normal;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ボタンスタイル */
+.edit-program,
+.delete-program {
+    margin-right: 5px;
+}
+
+.delete-program {
+    color: #a00;
+}
+
+.delete-program:hover {
+    color: #dc3232;
+    border-color: #dc3232;
+}
+
+/* ヘルプページ */
+.beer-affiliate-help {
+    max-width: 800px;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-top: 20px;
+}
+
+.beer-affiliate-help h2 {
+    color: #23282d;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+.beer-affiliate-help h2:first-child {
+    margin-top: 0;
+}
+
+.beer-affiliate-help h3 {
+    color: #0073aa;
+    margin-top: 25px;
+}
+
+.beer-affiliate-help h4 {
+    color: #555;
+    margin-top: 20px;
+}
+
+.beer-affiliate-help pre {
+    background: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.beer-affiliate-help dl {
+    margin-top: 20px;
+}
+
+.beer-affiliate-help dt {
+    font-weight: 600;
+    margin-top: 15px;
+    color: #23282d;
+}
+
+.beer-affiliate-help dd {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* テーブルスタイル */
+.wp-list-table .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.wp-list-table .dashicons-yes {
+    color: #46b450;
+}
+
+.wp-list-table .dashicons-no {
+    color: #dc3232;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 782px) {
+    .form-table th {
+        display: block;
+        width: auto;
+        padding-bottom: 5px;
+    }
+    
+    .form-table td {
+        padding-left: 0;
+    }
+    
+    .beer-affiliate-help {
+        padding: 20px;
+    }
+}

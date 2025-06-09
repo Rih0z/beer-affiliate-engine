@@ -31,16 +31,15 @@ class Travel_Display_Manager {
             return '';
         }
         
-        // テンプレートタイプに応じたメソッドを呼び出し
-        switch ($template_type) {
-            case 'button':
-                return $this->render_button_template($links);
-            case 'sticky':
-                return $this->render_sticky_template($links);
-            case 'card':
-            default:
-                return $this->render_card_template($links);
+        // ユーザーフレンドリーテンプレートをデフォルトに
+        if ($template_type === 'card' || $template_type === 'default') {
+            $template_type = 'user-friendly';
         }
+        
+        // 基本のディスプレイマネージャーを使用
+        require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-display-manager.php';
+        $display_manager = new Beer_Affiliate_Display_Manager();
+        return $display_manager->render($links, $template_type);
     }
     
     /**
