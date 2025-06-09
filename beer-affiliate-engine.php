@@ -3,7 +3,7 @@
  * Plugin Name: Beer Affiliate Engine
  * Plugin URI: https://rihobeer.com/plugins/beer-affiliate-engine
  * Description: クラフトビール記事の地域情報から旅行アフィリエイトリンクを自動生成するプラグイン
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: RihoBeer
  * Author URI: https://rihobeer.com/
  * Text Domain: beer-affiliate-engine
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // プラグイン定数を定義
-define('BEER_AFFILIATE_VERSION', '1.3.2');
+define('BEER_AFFILIATE_VERSION', '1.3.3');
 define('BEER_AFFILIATE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BEER_AFFILIATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -55,24 +55,43 @@ register_deactivation_hook(__FILE__, 'beer_affiliate_deactivate');
 
 // 有効化時の処理
 function beer_affiliate_activate() {
-    // 必要なデータベーステーブルやオプションを作成
-    add_option('beer_affiliate_version', BEER_AFFILIATE_VERSION);
-    
-    // デフォルト設定
-    if (!get_option('beer_affiliate_template')) {
-        add_option('beer_affiliate_template', 'card');
+    try {
+        // 有効化時に必要なクラスファイルを読み込み
+        if (!class_exists('Beer_Affiliate_Analytics')) {
+            require_once BEER_AFFILIATE_PLUGIN_DIR . 'includes/class-analytics.php';
+        }
+        
+        // 必要なデータベーステーブルやオプションを作成
+        add_option('beer_affiliate_version', BEER_AFFILIATE_VERSION);
+        
+        // デフォルト設定
+        if (!get_option('beer_affiliate_template')) {
+            add_option('beer_affiliate_template', 'card');
+        }
+        
+        if (!get_option('beer_affiliate_primary_module')) {
+            add_option('beer_affiliate_primary_module', 'travel');
+        }
+        
+        // クリック追跡用のテーブルを作成
+        if (class_exists('Beer_Affiliate_Analytics')) {
+            Beer_Affiliate_Analytics::create_tables();
+        }
+        
+        // 書き換えルールをフラッシュ
+        flush_rewrite_rules();
+        
+    } catch (Exception $e) {
+        // エラーログに記録
+        error_log('Beer Affiliate Engine Activation Error: ' . $e->getMessage());
+        
+        // WordPressにエラーメッセージを表示
+        wp_die(
+            'Beer Affiliate Engine有効化エラー: ' . $e->getMessage(),
+            'プラグイン有効化エラー',
+            array('back_link' => true)
+        );
     }
-    
-    if (!get_option('beer_affiliate_primary_module')) {
-        add_option('beer_affiliate_primary_module', 'travel');
-    }
-    
-    // クリック追跡用のテーブルを作成
-    // Analyticsクラスはstatic methodなので、クラスファイルの読み込みのみで十分
-    Beer_Affiliate_Analytics::create_tables();
-    
-    // 書き換えルールをフラッシュ
-    flush_rewrite_rules();
 }
 
 // 無効化時の処理
