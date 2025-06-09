@@ -31,6 +31,28 @@ test-*.php
 # Cache files
 *.cache
 
+# セキュアバージョン（実際のアフィリエイトIDを含む）
+beer-affiliate-engine-auto/
+beer-affiliate-engine-safe/
+
+# ログファイル
+*.log
+debug.log
+error_log
+
+# 設定ファイル
+config.php
+local-config.php
+
+# ドキュメント画像（サイズが大きいため）
+Images/*.png
+Images/*.jpg
+Images/*.jpeg
+
+# バックアップファイル
+*.bak
+*.backup
+
 # Affiliate configuration files (contains sensitive data)
 affiliate-config.json
 affiliate-config-*.json
