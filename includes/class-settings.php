@@ -34,9 +34,12 @@ class Beer_Affiliate_Settings {
      * コンストラクタ
      */
     private function __construct() {
-        add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_init', array($this, 'register_settings'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        // WordPressが読み込まれている場合のみフックを追加
+        if (function_exists('add_action')) {
+            add_action('admin_menu', array($this, 'add_admin_menu'));
+            add_action('admin_init', array($this, 'register_settings'));
+            add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        }
     }
     
     /**
