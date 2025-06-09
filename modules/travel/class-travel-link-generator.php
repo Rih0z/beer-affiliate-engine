@@ -50,6 +50,12 @@ class Travel_Link_Generator {
      * @return array リンクテンプレート
      */
     private function load_templates() {
+        // 開発時またはデバッグモードではキャッシュを使用しない
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $json_file = BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/link-templates.json';
+            return json_decode(file_get_contents($json_file), true);
+        }
+        
         // キャッシュからテンプレートを取得
         $templates = $this->data_store->get_cache('link_templates');
         
@@ -63,6 +69,39 @@ class Travel_Link_Generator {
         }
         
         return $templates;
+    }
+    
+    /**
+     * テンプレートキャッシュをクリア
+     */
+    public function clear_template_cache() {
+        $this->data_store->delete_cache('link_templates');
+    }
+    
+    /**
+     * A8.netプログラムの固定URLを取得
+     * 
+     * @param string $service サービス名
+     * @param array $template テンプレート情報
+     * @return string 固定URL
+     */
+    private function get_a8_fixed_url($service, $template) {
+        // 1. 設定画面から取得を試みる
+        $settings = get_option('beer_affiliate_settings', array());
+        if (isset($settings['a8_fixed_urls']) && isset($settings['a8_fixed_urls'][$service])) {
+            $url = $settings['a8_fixed_urls'][$service];
+            if (!empty($url)) {
+                return $url;
+            }
+        }
+        
+        // 2. テンプレートのfixed_urlから取得
+        if (isset($template['fixed_url']) && !empty($template['fixed_url'])) {
+            return $template['fixed_url'];
+        }
+        
+        // 3. 見つからない場合は空文字を返す
+        return '';
     }
     
     /**
@@ -104,6 +143,34 @@ class Travel_Link_Generator {
             // 無効化されたサービスをスキップ
             if (isset($template['disabled']) && $template['disabled']) {
                 continue;
+            }
+            
+            // A8.netの場合、設定画面またはテンプレートから固定URLを取得
+            if (isset($template['type']) && $template['type'] === 'a8') {
+                $fixed_url = $this->get_a8_fixed_url($service, $template);
+                
+                if (!empty($fixed_url)) {
+                    // 固定URLを使用（都市名検索なし）
+                    $url = $fixed_url;
+                    
+                    // ラベルからも{CITY}を除去
+                    $label = isset($template['fixed_label']) && !empty($template['fixed_label']) 
+                        ? $template['fixed_label'] 
+                        : str_replace('{CITY}', '', $template['label']);
+                    $label = trim(str_replace(array('の', 'で', 'を'), '', $label));
+                    
+                    $links[$service] = array(
+                        'url' => $url,
+                        'label' => $label,
+                        'service' => $service,
+                        'image' => isset($template['image']) ? $template['image'] : '',
+                        'priority' => isset($template['priority']) ? intval($template['priority']) : 10,
+                        'category' => isset($template['category']) ? $template['category'] : 'travel'
+                    );
+                    
+                    $this->debug_log("Using fixed URL for A8 service $service: $url");
+                    continue;
+                }
             }
             
             // URLを初期化
@@ -366,9 +433,10 @@ class Travel_Link_Generator {
         
         // 2. WordPressオプションから取得
         if (empty($affiliate_id)) {
-            // 楽天トラベルの場合は専用オプションを確認
+            // 楽天トラベルの場合は設定画面のオプションから取得
             if ($service === '楽天トラベル') {
-                $affiliate_id = get_option('beer_affiliate_rakuten_travel_id', '');
+                $settings = get_option('beer_affiliate_settings', array());
+                $affiliate_id = isset($settings['rakuten_affiliate_id']) ? $settings['rakuten_affiliate_id'] : '';
             } else {
                 $option_name = 'beer_affiliate_' . sanitize_title($service) . '_id';
                 $option_value = get_option($option_name);

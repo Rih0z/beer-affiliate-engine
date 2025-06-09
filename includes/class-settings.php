@@ -132,6 +132,14 @@ class Beer_Affiliate_Settings {
             'a8_section'
         );
         
+        add_settings_field(
+            'a8_fixed_urls',
+            'A8固定URL設定',
+            array($this, 'a8_fixed_urls_callback'),
+            self::MENU_SLUG,
+            'a8_section'
+        );
+        
         // 表示設定セクション
         add_settings_section(
             'display_section',
@@ -235,6 +243,56 @@ class Beer_Affiliate_Settings {
     }
     
     /**
+     * A8固定URL設定フィールド
+     */
+    public function a8_fixed_urls_callback() {
+        $options = get_option(self::OPTION_NAME);
+        $fixed_urls = isset($options['a8_fixed_urls']) ? $options['a8_fixed_urls'] : array();
+        
+        // デフォルトのA8プログラムリスト
+        $default_programs = array(
+            'JTB国内旅行' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+61B8KY+15A4+63WO2',
+            '一休.comレストラン' => 'https://px.a8.net/svt/ejp?a8mat=3NJ1WF+CEJ4HE+1OK+NX736',
+            '読売旅行' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+5VYC4Y+5KLE+5YRHE',
+            'Otomoni クラフトビール定期便' => 'https://px.a8.net/svt/ejp?a8mat=3NJ1WF+D1R12Q+4XM6+5YJRM',
+            'トラベル・スタンダード・ジャパン' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+61WO6Q+5LKE+5YJRM',
+            'カタール航空' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+64AELU+5NMU+5YJRM',
+            'Travelist' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+63OZ02+4XZI+HVFKY',
+            'Oooh(ウー)' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+7VZSC2+5OEM+5YRHE',
+            'Saily' => 'https://px.a8.net/svt/ejp?a8mat=4530O4+5WJRQQ+5L2C+5YRHE'
+        );
+        ?>
+        <div class="a8-fixed-urls-section">
+            <p class="description" style="margin-bottom: 15px;">A8.netプログラムの固定URLを設定します。都市検索を無効にして、設定したURLをそのまま使用します。</p>
+            
+            <?php foreach ($default_programs as $program_name => $default_url) : 
+                $current_url = isset($fixed_urls[$program_name]) ? $fixed_urls[$program_name] : $default_url;
+            ?>
+            <div class="a8-program-setting" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;"><?php echo esc_html($program_name); ?></label>
+                <input type="url" 
+                       name="<?php echo self::OPTION_NAME; ?>[a8_fixed_urls][<?php echo esc_attr($program_name); ?>]" 
+                       value="<?php echo esc_attr($current_url); ?>" 
+                       class="large-text" 
+                       style="width: 100%;" />
+                <p class="description" style="margin-top: 5px;">このプログラムの固定URLを入力してください。</p>
+            </div>
+            <?php endforeach; ?>
+            
+            <div style="background: #f0f8ff; padding: 15px; border-left: 4px solid #0073aa; margin-top: 20px;">
+                <h4 style="margin-top: 0;">💡 A8固定URL機能について</h4>
+                <ul style="margin-bottom: 0;">
+                    <li>都市名による動的検索をせず、設定したURLをそのまま使用します</li>
+                    <li>表示ラベルからも「{CITY}」が自動的に除去されます</li>
+                    <li>無効なリダイレクト（coreda.jpなど）を防ぐことができます</li>
+                    <li>URLを空にすると、そのプログラムは表示されません</li>
+                </ul>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
      * デフォルトテンプレート選択
      */
     public function default_template_callback() {
@@ -296,6 +354,20 @@ class Beer_Affiliate_Settings {
         foreach ($text_fields as $field) {
             if (isset($input[$field])) {
                 $sanitized[$field] = sanitize_text_field($input[$field]);
+            }
+        }
+        
+        // A8固定URL設定
+        if (isset($input['a8_fixed_urls']) && is_array($input['a8_fixed_urls'])) {
+            $sanitized['a8_fixed_urls'] = array();
+            foreach ($input['a8_fixed_urls'] as $program_name => $url) {
+                if (!empty($url)) {
+                    $sanitized_url = sanitize_url($url);
+                    // A8.netのURLかチェック
+                    if (strpos($sanitized_url, 'px.a8.net') !== false || strpos($sanitized_url, 'rpx.a8.net') !== false) {
+                        $sanitized['a8_fixed_urls'][sanitize_text_field($program_name)] = $sanitized_url;
+                    }
+                }
             }
         }
         
