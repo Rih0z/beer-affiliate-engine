@@ -17,12 +17,21 @@ class Beer_Affiliate_Analytics {
      */
     public function __construct() {
         global $wpdb;
-        $this->table_name = $wpdb->prefix . 'beer_affiliate_clicks';
         
-        // フックを登録
-        add_action('wp_ajax_beer_affiliate_track_click', array($this, 'track_click'));
-        add_action('wp_ajax_nopriv_beer_affiliate_track_click', array($this, 'track_click'));
-        add_action('admin_menu', array($this, 'add_analytics_menu'));
+        // $wpdbが利用可能な場合のみテーブル名を設定
+        if (isset($wpdb) && is_object($wpdb)) {
+            $this->table_name = $wpdb->prefix . 'beer_affiliate_clicks';
+        } else {
+            // フォールバック
+            $this->table_name = 'wp_beer_affiliate_clicks';
+        }
+        
+        // フックを登録（関数が存在する場合のみ）
+        if (function_exists('add_action')) {
+            add_action('wp_ajax_beer_affiliate_track_click', array($this, 'track_click'));
+            add_action('wp_ajax_nopriv_beer_affiliate_track_click', array($this, 'track_click'));
+            add_action('admin_menu', array($this, 'add_analytics_menu'));
+        }
     }
     
     /**
@@ -30,6 +39,11 @@ class Beer_Affiliate_Analytics {
      */
     public static function create_tables() {
         global $wpdb;
+        
+        // $wpdbが利用可能でない場合は処理をスキップ
+        if (!isset($wpdb) || !is_object($wpdb)) {
+            return;
+        }
         
         $table_name = $wpdb->prefix . 'beer_affiliate_clicks';
         $charset_collate = $wpdb->get_charset_collate();

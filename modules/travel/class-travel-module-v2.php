@@ -39,8 +39,6 @@ class Travel_Module_V2 extends Base_Affiliate_Module {
      * コンストラクタ
      */
     public function __construct() {
-        parent::__construct();
-        
         // 必要なクラスをロード
         require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-content-analyzer.php';
         require_once BEER_AFFILIATE_PLUGIN_DIR . 'modules/travel/class-travel-link-generator.php';
