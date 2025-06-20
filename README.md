@@ -1,6 +1,10 @@
-# Beer Affiliate Engine - クラフトビールアフィリエイトプラグイン
+# # Beer Affiliate Engine - クラフトビールアフィリエイトプラグイン
 
 クラフトビールブログの記事内の地域情報を自動検出し、最適化された旅行アフィリエイトリンクを生成するWordPressプラグインです。rihobeer.comのデザインシステムを採用し、ユーザーフレンドリーな体験と収益最適化を両立します。
+
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![Version](https://img.shields.io/badge/Version-1.5.4-green.svg)](https://github.com/kokiriho/beer-affiliate-engine)
+[![WordPress](https://img.shields.io/badge/WordPress-5.6%2B-blue.svg)](https://wordpress.org/)
 
 ![プラグインスクリーンショット](./Images/IMG_0010.png)
 
@@ -177,20 +181,114 @@
 - カスタマイザー設定で「海外都市への対応を有効化」が有効になっているか確認
 - 記事内の海外都市名が地域辞書に含まれているか確認
 
-## 開発者向け情報
+## 🛠️ 開発者向け情報
+
+### アーキテクチャ概要
+
+```
+beer-affiliate-engine/
+├── beer-affiliate-engine.php      # メインプラグインファイル
+├── includes/                       # コアクラス
+│   ├── class-core.php             # プラグインコントローラー
+│   ├── class-module-manager.php   # モジュール管理
+│   ├── class-content-analyzer.php # コンテンツ解析
+│   ├── class-link-generator.php   # リンク生成
+│   └── class-display-manager.php  # 表示管理
+├── modules/                        # 機能モジュール
+│   ├── travel/                    # 旅行アフィリエイト
+│   └── revenue-optimizer/         # 収益最適化
+├── templates/                      # 表示テンプレート
+└── assets/                        # CSS/JavaScript
+```
 
 ### プラグイン拡張
-このプラグインは拡張性を考慮した設計になっています。新しいモジュールの追加、表示テンプレートのカスタマイズ、新しいアフィリエイトサービスの追加などが容易に行えます。
 
-詳細な開発者向け情報は以下のファイルを参照してください：
-- `docs/code-convention.md`: コード規約と設計情報
-- `docs/implementation-guide.md`: 実装ガイド
+#### 新しいモジュールの追加
+```php
+// 1. Affiliate_Module_Interfaceを実装
+class Your_Module implements Affiliate_Module_Interface {
+    public function get_name() { return 'your-module'; }
+    public function analyze_content($content) { /* 実装 */ }
+    public function generate_links($analysis) { /* 実装 */ }
+}
 
-### 地域の追加
-`modules/travel/city-dictionary.json` ファイルに地域情報を追加することで、新しい地域に対応できます。
+// 2. モジュールを登録
+add_action('beer_affiliate_register_modules', function($module_manager) {
+    $module_manager->register_module(new Your_Module());
+});
+```
+
+#### カスタムテンプレートの作成
+```php
+// templates/custom.php
+<div class="beer-affiliate-custom">
+    <h4><?php echo esc_html($title); ?></h4>
+    <a href="<?php echo esc_url($url); ?>" class="custom-link">
+        <?php echo esc_html($label); ?>
+    </a>
+</div>
+```
+
+### 地域データベースの拡張
+`modules/travel/city-dictionary.json`に新しい地域を追加：
+
+```json
+{
+    "cities": {
+        "新地域名": {
+            "name": "新地域名",
+            "country": "JP",
+            "prefecture": "都道府県",
+            "type": "city"
+        }
+    }
+}
+```
 
 ### アフィリエイトサービスの追加
-`modules/travel/link-templates.json` ファイルに新しいサービス情報を追加することで、アフィリエイトサービスを拡張できます。
+`modules/travel/link-templates.json`に新しいサービスを追加：
+
+```json
+{
+    "services": {
+        "new_service": {
+            "name": "新サービス",
+            "url_template": "https://example.com/search?q={city}&aid={affiliate_id}",
+            "label": "新サービスで検索",
+            "category": "domestic",
+            "priority": 5
+        }
+    }
+}
+```
+
+### フックとフィルター
+
+```php
+// リンク生成前の処理
+add_filter('beer_affiliate_before_generate_links', function($cities, $content) {
+    // カスタム処理
+    return $cities;
+}, 10, 2);
+
+// 表示前のリンク修正
+add_filter('beer_affiliate_display_links', function($links) {
+    // リンクをカスタマイズ
+    return $links;
+});
+
+// テンプレート変数の追加
+add_filter('beer_affiliate_template_vars', function($vars, $template) {
+    $vars['custom_data'] = 'カスタム値';
+    return $vars;
+}, 10, 2);
+```
+
+### 詳細な開発者向け情報
+- `Document/develop.md`: 開発ガイドライン
+- `Document/code.md`: コード規約
+- `Document/spec.md`: 技術仕様
+- `CLAUDE.md`: AI開発アシスタント向け指示
 
 ## ライセンス
 
@@ -228,14 +326,51 @@ A: 記事内にビール関連キーワードと地域名の両方が含まれ�
 **Q: デザインがサイトに合わない**
 A: rihobeer.comデザインシステムを使用しており、CSSでカスタマイズ可能です。
 
+## 🚀 ビルドとデプロイ
+
+### プロダクションビルド
+
+```bash
+# 設定ファイルを使用したビルド
+cp affiliate-config.json.example affiliate-config.json
+# affiliate-config.jsonにアフィリエイトIDを設定
+./build-plugin.sh affiliate-config.json
+
+# デフォルトビルド
+./build-plugin.sh
+```
+
+### テスト用ビルド
+
+```bash
+# クリーンな最小構成でビルド
+./create-clean-plugin.sh
+
+# テスト用ZIPファイル作成
+./create-test-zip.sh
+```
+
+### デバッグとテスト
+
+```bash
+# 構文チェック
+php test-syntax-check.php
+
+# モジュール読み込みテスト
+php test-module-loading.php
+
+# API接続テスト
+php test-rakuten-api.php
+```
+
 ## 📊 変更履歴
 
-### 1.5.0 (2025-01-09) - 現在のバージョン
-#### 🎉 完全リビルド版
-- **ゼロからの再構築**: すべてのエラーを解決するため完全に新規作成
-- **シンプルな構造**: 最小限の機能から始めて安定性を確保
-- **エラーフリー**: 「リンクが期限切れ」「有効なヘッダーがありません」等のエラーを完全解決
-- **段階的な機能追加**: 基本機能の動作確認後、順次機能を追加予定
+### 1.5.4 (2025-06-20) - 現在のバージョン
+#### 🎉 安定版リリース
+- **エラーフリー動作**: 「リンクが期限切れ」「有効なヘッダーがありません」等のエラーを完全解決
+- **モジュール化された構造**: 拡張性を考慮したクリーンなアーキテクチャ
+- **収益最適化機能**: インテリジェントな収益最大化システム
+- **包括的な管理機能**: 詳細な設定とアナリティクス機能
 
 ### 1.4.4 (2025-01-09)
 #### 🎉 メジャーリファクタリング
